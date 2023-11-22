@@ -9,10 +9,12 @@ import logoCompleta from '../../assets/logocompleta.png'
 import '../../../src/index.css';
 import api from '../../service/api'
 import { ConfigProvider } from 'antd';
+import { format } from 'date-fns';
 
 const { Header, Sider } = Layout;
 
 export function AlarmesCelulose() {
+
 
   const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -58,6 +60,7 @@ export function AlarmesCelulose() {
           </Sider>
           <Layout>
             <Header style={{ padding: 0, background: colorBgContainer}} >
+              
               <Button 
                 type='text' 
                 className='toggle'
@@ -65,9 +68,11 @@ export function AlarmesCelulose() {
                 icon={collapsed ? <MenuUnfoldOutlined /> : 
                 <MenuFoldOutlined />} 
               />
+              
+              
             </Header>
-
-            <div className='mainPageTable'>
+            {alarmesCelulose.length>0&&
+            
               <MainTable>
                 <table className="table minha-classe-personalizada">
                   <thead>
@@ -84,14 +89,15 @@ export function AlarmesCelulose() {
 
                   <tbody>
                     { records.map ((d,i) => (
+                      
                       <tr key={i}>
-                        <td>{d.alci_dt_alarme === null ? '-' : d.alci_dt_alarme.value.toLocaleDateString('en-GB')}</td>
-                        <td>{d.alci_dt_final===null?'-':d.alci_dt_final.value}</td>
+                        <td>{d.alci_dt_alarme === null ? '-' : format(new Date(d.alci_dt_alarme.value), 'dd/MM/yyyy HH:mm')}</td>
+                        <td>{d.alci_dt_final===null?'-':format(new Date(d.alci_dt_final.value), 'dd/MM/yyyy HH:mm')}</td>
                         <td>{d.alci_ds_tag}</td>
                         <td>{d.alci_ds_tipo_alarme_1}</td>
                         <td>{d.alci_tx_usuario_1}</td>
-                        <td>{d.alci_dt_reconhecimento===null?'-':d.alci_dt_reconhecimento.value}</td>
-                        <td>{d.alci_ds_area}</td>
+                        <td>{d.alci_dt_reconhecimento===null?'-':format(new Date(d.alci_dt_reconhecimento.value), 'dd/MM/yyyy HH:mm')}</td>
+                        <td>{d.alci_ds_area===''?'-':d.alci_ds_area}</td>
                         {/* <td>{d.alci_cd_identificador}</td> */}
                       </tr>
                     ))}
@@ -120,8 +126,8 @@ export function AlarmesCelulose() {
                   </ul>
                 </nav>
               </MainTable>
-            </div>
-
+            
+}
           </Layout>
 
           
@@ -164,6 +170,8 @@ export function AlarmesCelulose() {
       }
     }
   }
+
+ 
   
 }
 

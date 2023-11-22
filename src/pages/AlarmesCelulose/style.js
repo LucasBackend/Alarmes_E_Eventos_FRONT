@@ -1,9 +1,17 @@
 import styled from 'styled-components';
 
 export const MainTable = styled.div`
+width:99%;
+height:95%;
+border-radius:5px;
+margin-top:10px;
+margin-bottom:10px;
+margin-left:10px;
+background:#fff;
+
 > table {
-  width: 90%;
-  margin: auto;
+  width: 99%;
+  margin: 10px auto 15px;
   > thead tr th {
     font-size: 1.6rem;
     font-weight: normal;
