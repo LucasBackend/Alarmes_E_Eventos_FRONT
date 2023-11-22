@@ -196,4 +196,12 @@
   box-shadow: none;
 }
 
+.hidden {
+  display: none;
+}
 
+.mainPageTable {
+  height: calc(100vh - 78px);
+  background-color: var(--white);
+  margin: 0;
+}

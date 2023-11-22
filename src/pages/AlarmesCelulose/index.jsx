@@ -9,21 +9,23 @@ import logoCompleta from '../../assets/logocompleta.png'
 import '../../../src/index.css';
 import api from '../../service/api'
 import { ConfigProvider } from 'antd';
+import { format } from 'date-fns';
 
 const { Header, Sider } = Layout;
 
 export function AlarmesCelulose() {
 
+
   const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
-  const recordsPerPage =24;
-  const lastIndex = currentPage * recordsPerPage;
-  const firstIndex = lastIndex - recordsPerPage;
-  const records = alarmesCelulose.slice(firstIndex, lastIndex);
-  const npage = Math.ceil(alarmesCelulose.length / recordsPerPage);
-  const numbers = [...Array(npage + 1).keys()].slice(1)
 
-  const paginationWindowSize = 5; // Total de números a serem exibidos
+  // const lastIndex = currentPage + 5;
+  // const firstIndex = lastIndex - recordsPerPage;
+  const records = alarmesCelulose;
+
+  const numbers = [...Array(2000).keys()].slice(1)
+  const npage = 2000;
+  const paginationWindowSize = 5;
   const [paginationWindow, setPaginationWindow] = useState({ start: 1, end: paginationWindowSize });
 
 
@@ -35,8 +37,10 @@ export function AlarmesCelulose() {
 
   useEffect(()=>{
     async function alarmesCelulose(){
+
+      const body = {"pagination" : currentPage}
       
-      const data = await api.post('/alarmes/celulose')
+      const data = await api.post('/alarmes/celulose', body)
 
       setAlarmesCelulose(data.data)
       console.log(data.data)
@@ -44,8 +48,8 @@ export function AlarmesCelulose() {
     }
 
     alarmesCelulose()
-  },[])
-  
+  },[currentPage])
+
   return (
     
     <ConfigProvider>
@@ -56,6 +60,7 @@ export function AlarmesCelulose() {
           </Sider>
           <Layout>
             <Header style={{ padding: 0, background: colorBgContainer}} >
+              
               <Button 
                 type='text' 
                 className='toggle'
@@ -63,26 +68,39 @@ export function AlarmesCelulose() {
                 icon={collapsed ? <MenuUnfoldOutlined /> : 
                 <MenuFoldOutlined />} 
               />
+              
+              
             </Header>
-
-            <div className='mainPageTable'>
+            {alarmesCelulose.length>0&&
+            
               <MainTable>
-                <table className='table'>
+                <table className="table minha-classe-personalizada">
                   <thead>
-                    <th>ID</th>
-                    <th>Inicio</th>
-                    <th>Fim</th>
+                    <tr>
+                      <th>Início</th>
+                      <th>Fim</th>
+                      <th>TAG</th>
+                      <th>Tipo</th>
+                      <th>Alarme</th>
+                      <th>Reconhecimento</th>
+                      <th>Área</th>
+                    </tr>
                   </thead>
+
                   <tbody>
-                    
                     { records.map ((d,i) => (
+                      
                       <tr key={i}>
-                        <td>{d.alci_cd_identificador}</td>
-                        <td>{d.alci_dt_alarme.value}</td>
-                        <td>{d.alci_dt_final===null?'-':d.alci_dt_final.value}</td>
+                        <td>{d.alci_dt_alarme === null ? '-' : format(new Date(d.alci_dt_alarme.value), 'dd/MM/yyyy HH:mm')}</td>
+                        <td>{d.alci_dt_final===null?'-':format(new Date(d.alci_dt_final.value), 'dd/MM/yyyy HH:mm')}</td>
+                        <td>{d.alci_ds_tag}</td>
+                        <td>{d.alci_ds_tipo_alarme_1}</td>
+                        <td>{d.alci_tx_usuario_1}</td>
+                        <td>{d.alci_dt_reconhecimento===null?'-':format(new Date(d.alci_dt_reconhecimento.value), 'dd/MM/yyyy HH:mm')}</td>
+                        <td>{d.alci_ds_area===''?'-':d.alci_ds_area}</td>
+                        {/* <td>{d.alci_cd_identificador}</td> */}
                       </tr>
                     ))}
-                    
                   </tbody>
                 </table>
                 <nav>
@@ -108,8 +126,8 @@ export function AlarmesCelulose() {
                   </ul>
                 </nav>
               </MainTable>
-            </div>
-
+            
+}
           </Layout>
 
           
@@ -122,7 +140,6 @@ export function AlarmesCelulose() {
     if (currentPage > 1) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
-      // Se a nova página está fora da janela atual, desloque a janela para trás
       if (newPage < paginationWindow.start) {
         const newStart = Math.max(newPage - 2, 1);
         setPaginationWindow({ start: newStart, end: newStart + paginationWindowSize - 1 });
@@ -133,12 +150,10 @@ export function AlarmesCelulose() {
   function changeCPage(pageNumber) {
     setCurrentPage(pageNumber);
   
-    // Se o número clicado for o último da janela de paginação, avance a janela
     if (pageNumber >= paginationWindow.start + paginationWindowSize - 1) {
       const newEnd = Math.min(pageNumber + 2, npage);
       setPaginationWindow({ start: newEnd - paginationWindowSize + 1, end: newEnd });
     }
-    // Se o número clicado for o primeiro da janela de paginação, recue a janela
     else if (pageNumber === paginationWindow.start && pageNumber > 1) {
       const newStart = Math.max(pageNumber - 2, 1);
       setPaginationWindow({ start: newStart, end: newStart + paginationWindowSize - 1 });
@@ -149,13 +164,14 @@ export function AlarmesCelulose() {
     if(currentPage < npage){
       const newPage = currentPage + 1;
       setCurrentPage(newPage);
-      // Se a nova página está fora da janela atual, desloque a janela
       if (newPage > paginationWindow.end) {
         const newStart = Math.min(newPage - 2, npage - paginationWindowSize + 1);
         setPaginationWindow({ start: newStart, end: newStart + paginationWindowSize - 1 });
       }
     }
   }
+
+ 
   
 }
 
