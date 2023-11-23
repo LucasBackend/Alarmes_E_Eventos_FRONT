@@ -1,4 +1,5 @@
 import { MainTable } from './style';
+import { FaRegHandPointUp } from "react-icons/fa";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
 import { Button, Layout, theme } from 'antd';
@@ -9,7 +10,6 @@ import logoCompleta from '../../assets/logocompleta.png'
 import '../../../src/index.css';
 import api from '../../service/api'
 import { ConfigProvider } from 'antd';
-import { format } from 'date-fns';
 
 const { Header, Sider } = Layout;
 
@@ -21,7 +21,7 @@ export function AlarmesCelulose() {
 
   // const lastIndex = currentPage + 5;
   // const firstIndex = lastIndex - recordsPerPage;
-  const records = alarmesCelulose;
+  //const records = alarmesCelulose;
 
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
@@ -36,18 +36,31 @@ export function AlarmesCelulose() {
   } = theme.useToken();
 
   useEffect(()=>{
-    async function alarmesCelulose(){
+    async function alarmesCeluloseArray(){
 
-      const body = {"pagination" : currentPage}
-      
-      const data = await api.post('/alarmes/celulose', body)
-
-      setAlarmesCelulose(data.data)
-      console.log(data.data)
-      
+       if (currentPage === 1 && alarmesCelulose.length === 0) {
+        let body = {"pagination" : currentPage}
+         
+        const data = await api.post('/alarmes/celulose', body)
+  
+        setAlarmesCelulose(data.data)
+      }else{
+        if((currentPage * 20)>alarmesCelulose.length){
+        let body = {"pagination" : currentPage}
+         
+        const data = await api.post('/alarmes/celulose', body)
+          
+        
+  
+        setAlarmesCelulose([...alarmesCelulose,...data.data])
+        
+      }else{
+        return
+      }
+    } 
     }
 
-    alarmesCelulose()
+    alarmesCeluloseArray()
   },[currentPage])
 
   return (
@@ -77,28 +90,31 @@ export function AlarmesCelulose() {
                 <table className="table minha-classe-personalizada">
                   <thead>
                     <tr>
-                      <th>Início</th>
-                      <th>Fim</th>
                       <th>TAG</th>
+                      <th>Descrição</th>
                       <th>Tipo</th>
                       <th>Alarme</th>
-                      <th>Reconhecimento</th>
-                      <th>Área</th>
+                      <th>Data</th>
+                      <th>Hora</th>
+                      <th>  </th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    { records.map ((d,i) => (
+                    { alarmesCelulose.slice((currentPage*20)-20, currentPage*20).map ((d,i) => (
                       
                       <tr key={i}>
-                        <td>{d.alci_dt_alarme === null ? '-' : format(new Date(d.alci_dt_alarme.value), 'dd/MM/yyyy HH:mm')}</td>
-                        <td>{d.alci_dt_final===null?'-':format(new Date(d.alci_dt_final.value), 'dd/MM/yyyy HH:mm')}</td>
                         <td>{d.alci_ds_tag}</td>
+                        <td>{d.alci_tx_usuario_2}</td>
                         <td>{d.alci_ds_tipo_alarme_1}</td>
                         <td>{d.alci_tx_usuario_1}</td>
-                        <td>{d.alci_dt_reconhecimento===null?'-':format(new Date(d.alci_dt_reconhecimento.value), 'dd/MM/yyyy HH:mm')}</td>
-                        <td>{d.alci_ds_area===''?'-':d.alci_ds_area}</td>
-                        {/* <td>{d.alci_cd_identificador}</td> */}
+                        <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
+                        <td>{d.alci_dt_final===null?'-':`teste`}</td>
+                        <td>
+                          <Button>
+                            <FaRegHandPointUp size={15}/>
+                          </Button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -171,8 +187,14 @@ export function AlarmesCelulose() {
     }
   }
 
- 
+  function dateFormat(date){
+    const data = new Date(date);
+    const offset = data.getTimezoneOffset(); // Diferença em minutos entre UTC e o fuso horário local
+    const dataCorrigida = new Date(data.getTime() - (offset * -60000)); // Ajusta para UTC
+    const dateBR = dataCorrigida.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', hour12: false });
   
+    return dateBR;
+  }
 }
 
 

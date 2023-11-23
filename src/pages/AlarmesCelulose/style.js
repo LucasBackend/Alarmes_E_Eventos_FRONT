@@ -17,19 +17,29 @@ background:#fff;
     font-weight: normal;
     background-color: #eff2f7;
   }
-}
+
   > thead tr th {
-    text-align: center;
-    padding: 25px 0 25px;
+    text-align: start;
+    padding: 10px 0 10px 5px;
   }
 
-> table thead th div { 
-    display: flex;
-    align-items: center;
-    justify-content: center; 
-    text-align: center;
+  > tbody tr td {
+    height: 4rem;
+    padding: 0 10px 4px 10px;
+    vertical-align: bottom;
   }
 
+  > table thead th div { 
+      display: flex;
+      align-items: center;
+      justify-content: center; 
+      text-align: center;
+  }
+
+  > tbody tr td:nth-child(7){
+    text-align: end;
+    padding-bottom: 4px;
+  }
 
   & tbody tr:nth-child(odd) * {
     background-color: white;
@@ -38,6 +48,7 @@ background:#fff;
   & tbody tr:nth-child(even) * {
     background-color: #f9f9f9;
   }
+}
 `
 
 
