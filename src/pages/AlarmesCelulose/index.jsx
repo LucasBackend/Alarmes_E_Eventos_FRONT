@@ -1,6 +1,6 @@
 import { MainTable,HeaderTable } from './style';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, Layout, theme } from 'antd';
 import { PiTargetThin } from "react-icons/pi";
 import { AiOutlineClose } from "react-icons/ai";
@@ -29,6 +29,8 @@ export function AlarmesCelulose() {
   const [collapsed, setCollapsed] = useState(false);
   const [linhasSelecionadas,setLinhasSelecionadas] = useState([])
 
+
+
   const {
     token: { colorBgContainer},
   } = theme.useToken();
@@ -43,7 +45,7 @@ export function AlarmesCelulose() {
   
         setAlarmesCelulose(data.data)
       }else{
-        if((currentPage * 20)>alarmesCelulose.length){
+        if((currentPage * itemsPerPage)>=alarmesCelulose.length){
         let body = {"pagination" : currentPage}
          
         const data = await api.post('/alarmes/celulose', body)
@@ -59,6 +61,7 @@ export function AlarmesCelulose() {
     alarmesCeluloseArray()
 
   },[currentPage])
+
 
   return (
     
@@ -94,7 +97,7 @@ export function AlarmesCelulose() {
               </HeaderTable>
                 {alarmesCelulose.length>0&&
                 <div id="scrollTable">
-                <table className="table minha-classe-personalizada">
+                <table className="table minha-classe-personalizada" >
                   <thead>
                     <tr>
                       <th>TAG</th>
