@@ -1,8 +1,9 @@
-import { MainTable } from './style';
-import { FaRegHandPointUp } from "react-icons/fa";
+import { MainTable,HeaderTable } from './style';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
 import { Button, Layout, theme } from 'antd';
+import { PiTargetThin } from "react-icons/pi";
+import { AiOutlineClose } from "react-icons/ai";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import Logo from '../../components/Logo';
 import MenuList from '../../components/MenuList';
@@ -30,6 +31,7 @@ export function AlarmesCelulose() {
 
 
   const [collapsed, setCollapsed] = useState(false);
+  const [linhasSelecionadas,setLinhasSelecionadas] = useState([])
 
   const {
     token: { colorBgContainer},
@@ -84,9 +86,13 @@ export function AlarmesCelulose() {
               
               
             </Header>
-            {alarmesCelulose.length>0&&
             
               <MainTable>
+              <HeaderTable>
+                
+              </HeaderTable>
+                {alarmesCelulose.length>0&&
+                <div id="scrollTable">
                 <table className="table minha-classe-personalizada">
                   <thead>
                     <tr>
@@ -99,11 +105,10 @@ export function AlarmesCelulose() {
                       <th>  </th>
                     </tr>
                   </thead>
-
                   <tbody>
-                    { alarmesCelulose.slice((currentPage*20)-20, currentPage*20).map ((d,i) => (
+                    {alarmesCelulose.slice((currentPage*20)-20, currentPage*100).map ((d,i) => (
                       
-                      <tr key={i}>
+                      <tr key={i} data-select={linhasSelecionadas.includes(i)}>
                         <td>{d.alci_ds_tag}</td>
                         <td>{d.alci_tx_usuario_2}</td>
                         <td>{d.alci_ds_tipo_alarme_1}</td>
@@ -111,19 +116,24 @@ export function AlarmesCelulose() {
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_dt_final===null?'-':`teste`}</td>
                         <td>
-                          <Button>
-                            <FaRegHandPointUp size={15}/>
+                          <Button onClick={()=>{selectTableHandleClick(i)}}>
+                            {linhasSelecionadas.includes(i)?<AiOutlineClose/>:<PiTargetThin  size={15}/>}
                           </Button>
                         </td>
                       </tr>
                     ))}
+                    
                   </tbody>
                 </table>
+                </div>
+                }
+               
+                {alarmesCelulose.length>0&&
                 <nav>
                   <ul className='pagination'>
                     <li className='page-item'>
                       <a href='#' className='page-link' 
-                      onClick={prevPage}>Prev</a>
+                      onClick={prevPage}>Anterior</a>
                     </li>
                     {
                       numbers.slice(paginationWindow.start - 1, paginationWindow.end)
@@ -136,14 +146,16 @@ export function AlarmesCelulose() {
                     }
                     <li className='page-item'>
                       <a href='#' className='page-link' 
-                      onClick={nextPage}>Next</a>
+                      onClick={nextPage}>Próximo</a>
                     </li>
 
                   </ul>
                 </nav>
+                }
+                
               </MainTable>
-            
-}
+              
+
           </Layout>
 
           
@@ -191,9 +203,25 @@ export function AlarmesCelulose() {
     const data = new Date(date);
     const offset = data.getTimezoneOffset(); // Diferença em minutos entre UTC e o fuso horário local
     const dataCorrigida = new Date(data.getTime() - (offset * -60000)); // Ajusta para UTC
-    const dateBR = dataCorrigida.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', hour12: false });
-  
-    return dateBR;
+    const dia = dataCorrigida.getDate();
+    const mes = dataCorrigida.getMonth() + 1; 
+    const ano = dataCorrigida.getFullYear();
+
+    const dataFormatada = `${dia<10?`${0}${dia}`:dia}/${mes<10?`${0}${mes}`:mes}/${ano}`;
+
+    return dataFormatada;
+  }
+
+  function selectTableHandleClick(key){
+    if(linhasSelecionadas.includes(key)){
+      setLinhasSelecionadas([...linhasSelecionadas.filter(item=>item!==key)])
+      console.log(linhasSelecionadas)
+    }else{
+      setLinhasSelecionadas([...linhasSelecionadas,key])
+      console.log(linhasSelecionadas)
+    }
+    
+
   }
 }
 
