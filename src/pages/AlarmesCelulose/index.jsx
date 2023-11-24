@@ -15,7 +15,7 @@ import { ConfigProvider } from 'antd';
 const { Header, Sider } = Layout;
 
 export function AlarmesCelulose() {
-
+  const scrollContainerRef = useRef(null);
 
   const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -28,8 +28,6 @@ export function AlarmesCelulose() {
 
   const [collapsed, setCollapsed] = useState(false);
   const [linhasSelecionadas,setLinhasSelecionadas] = useState([])
-
-
 
   const {
     token: { colorBgContainer},
@@ -58,9 +56,13 @@ export function AlarmesCelulose() {
       } 
     }
 
-    alarmesCeluloseArray()
+    alarmesCeluloseArray();
 
-  },[currentPage])
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+
+  }, [alarmesCelulose, currentPage, itemsPerPage]);
 
 
   return (
@@ -87,16 +89,41 @@ export function AlarmesCelulose() {
             
               <MainTable>
               <HeaderTable>
-                <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="40">40</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
+                <h1>Alarmes Celulose</h1>
+                <div>
+                  <div id="itemsPerPage">
+                    <span>Exibir</span>
+                    <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
+                      <option value="20">20</option>
+                      <option value="30">30</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                  <form>
+                    <label>
+                      Data de Início:
+                      <input
+                        type="date"
+                        value=""
+                        onChange={(e) => setStartDate(e.target.value)}
+                      />
+                    </label>
+
+                    <label>
+                      Data de Fim:
+                      <input
+                        type="date"
+                        value=""
+                        onChange={(e) => setEndDate(e.target.value)}
+                      />
+                    </label>
+                  </form>
+                </div>
               </HeaderTable>
                 {alarmesCelulose.length>0&&
-                <div id="scrollTable">
+                <div id="scrollTable" ref={scrollContainerRef} >
                 <table className="table minha-classe-personalizada" >
                   <thead>
                     <tr>
@@ -158,11 +185,7 @@ export function AlarmesCelulose() {
                 }
                 
               </MainTable>
-              
-
           </Layout>
-
-          
       </Layout>
     </ConfigProvider>
                 

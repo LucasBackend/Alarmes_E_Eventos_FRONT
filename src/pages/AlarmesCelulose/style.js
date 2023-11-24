@@ -9,10 +9,49 @@ margin: 0 auto;
 border-radius:8px;
 margin-top: 10px;
 margin-bottom: 3px;
+padding: 1rem;
 
-> select {
-  width: 200px;
+>h1 {
+  font-size: 1.8rem;
 }
+
+>div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 2.5rem 0;
+}
+
+>div #itemsPerPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  margin-top: 1.5rem;
+}
+
+>div #itemsPerPage span {
+  margin-top: 3px;
+}
+
+>div form {
+  display: flex;
+  gap: 2rem;
+}
+
+>div form label{
+  display: flex;
+  flex-direction: column;
+}
+
+>div select {
+  width: 5rem;
+  align-items: center;
+  text-align: center;
+  margin-left: 5px;
+}
+
 `
 
 export const MainTable = styled.div`
@@ -33,19 +72,19 @@ background:#fff;
 }
 
 >#scrollTable::-webkit-scrollbar{
-    width: 0rem;
+  width: 0rem;
 }
 
 >#scrollTable::-webkit-scrollbar-track {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 >#scrollTable::-webkit-scrollbar-thumb {
-    background-color: grey;
-    border-radius: 0px;
+  background-color: grey;
+  border-radius: 0px;
 }
 
-> #scrollTable table {
+>#scrollTable table {
   width: 99%;
   margin: 10px auto 15px;
   overflow-y:auto;
@@ -62,8 +101,6 @@ background:#fff;
     background-color: #eff2f7;
   }
 
-  
-
   > tbody tr td {
     height: 4rem;
     padding: 0 10px 4px 10px;
@@ -73,10 +110,10 @@ background:#fff;
   }
 
   > table thead th div { 
-      display: flex;
-      align-items: center;
-      justify-content: center; 
-      text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    text-align: center;
   }
 
   > tbody tr td:nth-child(7){
@@ -86,8 +123,6 @@ background:#fff;
 
   & tbody tr:nth-child(odd) * {
     background-color: white;
-
-    
   }
 
   & tbody tr:nth-child(even) * {
@@ -95,23 +130,23 @@ background:#fff;
   }
 
   >tbody tr { 
-  &[data-select='true']{
-    *{
-      transition: 2s ease;
-      background:#F46A6A;
-    }
+    &[data-select='true']{
+      *{
+        transition: 2s ease;
+        background:#F46A6A;
+      }
 
-    >td button{
-      border-color:white;
-    }
+      >td button{
+        border-color:white;
+      }
 
-    >td button svg {
-      fill:white;
-      background:transparent;
-      color:transparent;
+      >td button svg {
+        fill:white;
+        background:transparent;
+        color:transparent;
+      }
     }
   }
-}
 }
 
 >nav {
@@ -119,10 +154,10 @@ background:#fff;
 }
 
 >nav ul li a{
-    font-size:15px;
-    margin:0;
-    display:flex;
-    align-items:center;
+  font-size:15px;
+  margin:0;
+  display:flex;
+  align-items:center;
 }
 
 
