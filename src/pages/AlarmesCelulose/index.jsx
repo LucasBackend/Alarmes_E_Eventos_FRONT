@@ -1,8 +1,9 @@
-import { MainTable } from './style';
-import { FaRegHandPointUp } from "react-icons/fa";
+import { MainTable,HeaderTable } from './style';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, Layout, theme } from 'antd';
+import { PiTargetThin } from "react-icons/pi";
+import { AiOutlineClose } from "react-icons/ai";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import Logo from '../../components/Logo';
 import MenuList from '../../components/MenuList';
@@ -10,26 +11,28 @@ import logoCompleta from '../../assets/logocompleta.png'
 import '../../../src/index.css';
 import api from '../../service/api'
 import { ConfigProvider } from 'antd';
+import ExportToExcel from './excel.jsx'
 
-const { Header, Sider } = Layout;
+
+
+const { Header, Sider } = Layout; 
 
 export function AlarmesCelulose() {
-
+  const scrollContainerRef = useRef(null);
 
   const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
-
-  // const lastIndex = currentPage + 5;
-  // const firstIndex = lastIndex - recordsPerPage;
-  //const records = alarmesCelulose;
+  const [filtroDataInicio,setFiltroDataInicio] = useState(null)
+  const [filtroDataFim,setFiltroDataFim] = useState()
 
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
   const paginationWindowSize = 5;
   const [paginationWindow, setPaginationWindow] = useState({ start: 1, end: paginationWindowSize });
-
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
   const [collapsed, setCollapsed] = useState(false);
+  const [linhasSelecionadas,setLinhasSelecionadas] = useState([])
 
   const {
     token: { colorBgContainer},
@@ -45,23 +48,36 @@ export function AlarmesCelulose() {
   
         setAlarmesCelulose(data.data)
       }else{
-        if((currentPage * 20)>alarmesCelulose.length){
+        if((currentPage * itemsPerPage)>=alarmesCelulose.length){
         let body = {"pagination" : currentPage}
          
         const data = await api.post('/alarmes/celulose', body)
           
-        
-  
         setAlarmesCelulose([...alarmesCelulose,...data.data])
         
-      }else{
-        return
-      }
-    } 
+        }else{
+          return
+        }
+      } 
     }
 
-    alarmesCeluloseArray()
-  },[currentPage])
+    alarmesCeluloseArray();
+
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+
+  }, [alarmesCelulose, currentPage, itemsPerPage]);
+
+  useEffect(()=>{
+    const data = new Date()
+    const anoatual = data.getFullYear()
+    const mesAtual = data.getMonth()+1
+    const diaAtual = data.getDate() 
+
+    setFiltroDataInicio(`${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
+    setFiltroDataFim(`${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
+  })
 
   return (
     
@@ -84,10 +100,47 @@ export function AlarmesCelulose() {
               
               
             </Header>
-            {alarmesCelulose.length>0&&
             
               <MainTable>
-                <table className="table minha-classe-personalizada">
+              <HeaderTable>
+                <h1>Alarmes Celulose</h1>
+                <div>
+                  <div id="itemsPerPage">
+                    <span>Exibir</span>
+                    <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
+                      <option value="20">20</option>
+                      <option value="30">30</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                  <form>
+                    <ExportToExcel data={alarmesCelulose} fileName={'AlarmesCelulose'} id="excel"/>
+                    <label>
+                      Data de Início:
+                      <input
+                        type="date"
+                        defaultValue={filtroDataInicio}
+                        onChange={(e) => setFiltroDataInicio(e.target.value)}
+                      />
+                    </label>
+
+                    <label>
+                   
+                      Data de Fim:
+                      <input
+                        type="date"
+                        defaultValue={filtroDataFim}
+                        onChange={(e)=> setFiltroDataFim(e.target.value)}
+                      />
+                    </label>
+                  </form>
+                </div>
+              </HeaderTable>
+                {alarmesCelulose.length>0&&
+                <div id="scrollTable" ref={scrollContainerRef} >
+                <table className="table minha-classe-personalizada" >
                   <thead>
                     <tr>
                       <th>TAG</th>
@@ -99,31 +152,35 @@ export function AlarmesCelulose() {
                       <th>  </th>
                     </tr>
                   </thead>
-
                   <tbody>
-                    { alarmesCelulose.slice((currentPage*20)-20, currentPage*20).map ((d,i) => (
+                    {alarmesCelulose.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
                       
-                      <tr key={i}>
+                      <tr key={i} data-select={linhasSelecionadas.includes(d.alci_cd_identificador)}>
                         <td>{d.alci_ds_tag}</td>
                         <td>{d.alci_tx_usuario_2}</td>
                         <td>{d.alci_ds_tipo_alarme_1}</td>
                         <td>{d.alci_tx_usuario_1}</td>
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
-                        <td>{d.alci_dt_final===null?'-':`teste`}</td>
+                        <td>{d.alci_dt_final===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
                         <td>
-                          <Button>
-                            <FaRegHandPointUp size={15}/>
+                          <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
+                            {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15}/>}
                           </Button>
                         </td>
                       </tr>
                     ))}
+                    
                   </tbody>
                 </table>
+                </div>
+                }
+               
+                {alarmesCelulose.length>0&&
                 <nav>
                   <ul className='pagination'>
                     <li className='page-item'>
                       <a href='#' className='page-link' 
-                      onClick={prevPage}>Prev</a>
+                      onClick={prevPage}>Anterior</a>
                     </li>
                     {
                       numbers.slice(paginationWindow.start - 1, paginationWindow.end)
@@ -136,17 +193,15 @@ export function AlarmesCelulose() {
                     }
                     <li className='page-item'>
                       <a href='#' className='page-link' 
-                      onClick={nextPage}>Next</a>
+                      onClick={nextPage}>Próximo</a>
                     </li>
 
                   </ul>
                 </nav>
+                }
+                
               </MainTable>
-            
-}
           </Layout>
-
-          
       </Layout>
     </ConfigProvider>
                 
@@ -191,9 +246,37 @@ export function AlarmesCelulose() {
     const data = new Date(date);
     const offset = data.getTimezoneOffset(); // Diferença em minutos entre UTC e o fuso horário local
     const dataCorrigida = new Date(data.getTime() - (offset * -60000)); // Ajusta para UTC
-    const dateBR = dataCorrigida.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', hour12: false });
-  
-    return dateBR;
+    const dia = dataCorrigida.getDate();
+    const mes = dataCorrigida.getMonth() + 1; 
+    const ano = dataCorrigida.getFullYear();
+
+    const dataFormatada = `${dia<10?`${0}${dia}`:dia}/${mes<10?`${0}${mes}`:mes}/${ano}`;
+
+    return dataFormatada;
+  }
+
+  function timestampFormat(date){
+    const data = new Date(date)
+    const offset = data.getTimezoneOffset(); // Diferença em minutos entre UTC e o fuso horário local
+    const dataCorrigida = new Date(data.getTime() - (offset * -60000)); // Ajusta para UTC
+    const hora = dataCorrigida.getHours();
+    const minutos = dataCorrigida.getMinutes();
+    const segundos = dataCorrigida.getMinutes();
+    const milisegundos = dataCorrigida.getMilliseconds();
+
+    return `${hora<10?`${0}${hora}`:hora}:${minutos}:${segundos}:${milisegundos}`
+  }
+
+  function selectTableHandleClick(key){
+    
+
+    if(linhasSelecionadas.includes(key)){
+      setLinhasSelecionadas([...linhasSelecionadas.filter(item=>item!==key)])
+      
+    }else{
+      setLinhasSelecionadas([...linhasSelecionadas,key])
+      
+    }
   }
 }
 
