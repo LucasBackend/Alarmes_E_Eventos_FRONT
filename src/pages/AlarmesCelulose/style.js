@@ -38,6 +38,16 @@ padding: 1rem;
 >div form {
   display: flex;
   gap: 2rem;
+
+  >button{
+    height:40px;
+    width: 40px;
+    background:none;
+  }
+  >button svg{
+    width:25px;
+    height:25px;
+  }
 }
 
 >div form label{

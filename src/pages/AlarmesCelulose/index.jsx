@@ -11,14 +11,19 @@ import logoCompleta from '../../assets/logocompleta.png'
 import '../../../src/index.css';
 import api from '../../service/api'
 import { ConfigProvider } from 'antd';
+import ExportToExcel from './excel.jsx'
 
-const { Header, Sider } = Layout;
+
+
+const { Header, Sider } = Layout; 
 
 export function AlarmesCelulose() {
   const scrollContainerRef = useRef(null);
 
   const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [filtroDataInicio,setFiltroDataInicio] = useState(null)
+  const [filtroDataFim,setFiltroDataFim] = useState()
 
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
@@ -64,6 +69,15 @@ export function AlarmesCelulose() {
 
   }, [alarmesCelulose, currentPage, itemsPerPage]);
 
+  useEffect(()=>{
+    const data = new Date()
+    const anoatual = data.getFullYear()
+    const mesAtual = data.getMonth()+1
+    const diaAtual = data.getDate() 
+
+    setFiltroDataInicio(`${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
+    setFiltroDataFim(`${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
+  })
 
   return (
     
@@ -102,21 +116,23 @@ export function AlarmesCelulose() {
                     </select>
                   </div>
                   <form>
+                    <ExportToExcel data={alarmesCelulose} fileName={'AlarmesCelulose'} id="excel"/>
                     <label>
                       Data de Início:
                       <input
                         type="date"
-                        value=""
-                        onChange={(e) => setStartDate(e.target.value)}
+                        defaultValue={filtroDataInicio}
+                        onChange={(e) => setFiltroDataInicio(e.target.value)}
                       />
                     </label>
 
                     <label>
+                   
                       Data de Fim:
                       <input
                         type="date"
-                        value=""
-                        onChange={(e) => setEndDate(e.target.value)}
+                        defaultValue={filtroDataFim}
+                        onChange={(e)=> setFiltroDataFim(e.target.value)}
                       />
                     </label>
                   </form>
@@ -139,16 +155,16 @@ export function AlarmesCelulose() {
                   <tbody>
                     {alarmesCelulose.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
                       
-                      <tr key={i} data-select={linhasSelecionadas.includes(i)}>
+                      <tr key={i} data-select={linhasSelecionadas.includes(d.alci_cd_identificador)}>
                         <td>{d.alci_ds_tag}</td>
                         <td>{d.alci_tx_usuario_2}</td>
                         <td>{d.alci_ds_tipo_alarme_1}</td>
                         <td>{d.alci_tx_usuario_1}</td>
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
-                        <td>{d.alci_dt_final===null?'-':`teste`}</td>
+                        <td>{d.alci_dt_final===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
                         <td>
-                          <Button onClick={()=>{selectTableHandleClick(i)}}>
-                            {linhasSelecionadas.includes(i)?<AiOutlineClose/>:<PiTargetThin  size={15}/>}
+                          <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
+                            {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15}/>}
                           </Button>
                         </td>
                       </tr>
@@ -239,13 +255,27 @@ export function AlarmesCelulose() {
     return dataFormatada;
   }
 
+  function timestampFormat(date){
+    const data = new Date(date)
+    const offset = data.getTimezoneOffset(); // Diferença em minutos entre UTC e o fuso horário local
+    const dataCorrigida = new Date(data.getTime() - (offset * -60000)); // Ajusta para UTC
+    const hora = dataCorrigida.getHours();
+    const minutos = dataCorrigida.getMinutes();
+    const segundos = dataCorrigida.getMinutes();
+    const milisegundos = dataCorrigida.getMilliseconds();
+
+    return `${hora<10?`${0}${hora}`:hora}:${minutos}:${segundos}:${milisegundos}`
+  }
+
   function selectTableHandleClick(key){
+    
+
     if(linhasSelecionadas.includes(key)){
       setLinhasSelecionadas([...linhasSelecionadas.filter(item=>item!==key)])
-      console.log(linhasSelecionadas)
+      
     }else{
       setLinhasSelecionadas([...linhasSelecionadas,key])
-      console.log(linhasSelecionadas)
+      
     }
   }
 }
