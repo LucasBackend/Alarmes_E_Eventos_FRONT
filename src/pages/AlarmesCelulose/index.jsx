@@ -20,15 +20,11 @@ export function AlarmesCelulose() {
   const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
 
-  // const lastIndex = currentPage + 5;
-  // const firstIndex = lastIndex - recordsPerPage;
-  //const records = alarmesCelulose;
-
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
   const paginationWindowSize = 5;
   const [paginationWindow, setPaginationWindow] = useState({ start: 1, end: paginationWindowSize });
-
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
   const [collapsed, setCollapsed] = useState(false);
   const [linhasSelecionadas,setLinhasSelecionadas] = useState([])
@@ -52,17 +48,16 @@ export function AlarmesCelulose() {
          
         const data = await api.post('/alarmes/celulose', body)
           
-        
-  
         setAlarmesCelulose([...alarmesCelulose,...data.data])
         
-      }else{
-        return
-      }
-    } 
+        }else{
+          return
+        }
+      } 
     }
 
     alarmesCeluloseArray()
+
   },[currentPage])
 
   return (
@@ -89,7 +84,13 @@ export function AlarmesCelulose() {
             
               <MainTable>
               <HeaderTable>
-                
+                <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
+                  <option value="20">20</option>
+                  <option value="30">30</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
               </HeaderTable>
                 {alarmesCelulose.length>0&&
                 <div id="scrollTable">
@@ -106,7 +107,7 @@ export function AlarmesCelulose() {
                     </tr>
                   </thead>
                   <tbody>
-                    {alarmesCelulose.slice((currentPage*20)-20, currentPage*100).map ((d,i) => (
+                    {alarmesCelulose.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
                       
                       <tr key={i} data-select={linhasSelecionadas.includes(i)}>
                         <td>{d.alci_ds_tag}</td>
@@ -220,8 +221,6 @@ export function AlarmesCelulose() {
       setLinhasSelecionadas([...linhasSelecionadas,key])
       console.log(linhasSelecionadas)
     }
-    
-
   }
 }
 

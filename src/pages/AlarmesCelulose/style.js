@@ -9,6 +9,10 @@ margin: 0 auto;
 border-radius:8px;
 margin-top: 10px;
 margin-bottom: 3px;
+
+> select {
+  width: 200px;
+}
 `
 
 export const MainTable = styled.div`
@@ -19,6 +23,7 @@ margin-top:10px;
 margin-bottom:10px;
 margin-left:10px;
 background:#fff;
+
 
 
 >#scrollTable {
@@ -76,9 +81,7 @@ background:#fff;
 
   > tbody tr td:nth-child(7){
     text-align: end;
-    padding-bottom: 4px;
-
-    
+    padding-bottom: 4px; 
   }
 
   & tbody tr:nth-child(odd) * {
@@ -91,9 +94,7 @@ background:#fff;
     background-color: #f9f9f9;
   }
 
-  >tbody tr {
-    
-
+  >tbody tr { 
   &[data-select='true']{
     *{
       transition: 2s ease;
