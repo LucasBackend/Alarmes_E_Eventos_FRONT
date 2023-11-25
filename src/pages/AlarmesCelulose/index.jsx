@@ -10,7 +10,6 @@ import MenuList from '../../components/MenuList';
 import logoCompleta from '../../assets/logocompleta.png'
 import '../../../src/index.css';
 import api from '../../service/api'
-import { ConfigProvider } from 'antd';
 import ExportToExcel from './excel.jsx'
 
 
@@ -81,7 +80,7 @@ export function AlarmesCelulose() {
 
   return (
     
-    <ConfigProvider>
+
       <Layout>
           <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{paddingLeft: '10px', height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
             {collapsed?<Logo />:<img src={logoCompleta} width={100} className='LogoCompleta'/>}
@@ -203,7 +202,7 @@ export function AlarmesCelulose() {
               </MainTable>
           </Layout>
       </Layout>
-    </ConfigProvider>
+
                 
   )
 
