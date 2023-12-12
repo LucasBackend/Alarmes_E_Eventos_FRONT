@@ -61,6 +61,12 @@
 
 .ant-menu-title-content {
   font-size: 1.6rem;
+  text-decoration: none;
+}
+
+:where(.css-dev-only-do-not-override-zcfrx9).ant-menu-dark .ant-menu-item a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .menuTitle {
