@@ -78,7 +78,7 @@ background:#fff;
 >#scrollTable {
   overflow-y:auto;
   margin-bottom:5px;
-  height: 650px;
+  height: 70vh;
 }
 
 >#scrollTable::-webkit-scrollbar{

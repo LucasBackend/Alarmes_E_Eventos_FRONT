@@ -21,8 +21,9 @@ export function AlarmesCelulose() {
 
   const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [filtroDataInicio,setFiltroDataInicio] = useState(null)
+  const [filtroDataInicio,setFiltroDataInicio] = useState()
   const [filtroDataFim,setFiltroDataFim] = useState()
+  const [filtroArea,setFiltroArea] = useState('')
 
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
@@ -37,18 +38,44 @@ export function AlarmesCelulose() {
     token: { colorBgContainer},
   } = theme.useToken();
 
+  function date(){
+    const data = new Date()
+    const anoatual = data.getFullYear()
+    const mesAtual = data.getMonth()+1
+    const diaAtual = data.getDate() 
+
+    return `${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`
+  }
+  
+
   useEffect(()=>{
+    
     async function alarmesCeluloseArray(){
 
-       if (currentPage === 1 && alarmesCelulose.length === 0) {
-        let body = {"pagination" : currentPage}
+      if(!filtroDataInicio || !filtroDataFim){
+        const data = new Date()
+        const anoatual = data.getFullYear()
+        const mesAtual = data.getMonth()+1
+        const diaAtual = data.getDate() 
+   
+        setFiltroDataInicio(`${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
+        setFiltroDataFim(`${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
+        
+      }
+
+      if (currentPage === 1 && alarmesCelulose.length === 0) {
+        const dataTemp = date()
+        
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
          
         const data = await api.post('/alarmes/celulose', body)
   
         setAlarmesCelulose(data.data)
       }else{
+        
         if((currentPage * itemsPerPage)>=alarmesCelulose.length){
-        let body = {"pagination" : currentPage}
+        const dataTemp = date()
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
          
         const data = await api.post('/alarmes/celulose', body)
           
@@ -68,16 +95,7 @@ export function AlarmesCelulose() {
 
   }, [alarmesCelulose, currentPage, itemsPerPage]);
 
-  useEffect(()=>{
-    const data = new Date()
-    const anoatual = data.getFullYear()
-    const mesAtual = data.getMonth()+1
-    const diaAtual = data.getDate() 
-
-    setFiltroDataInicio(`${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
-    setFiltroDataFim(`${anoatual}-${mesAtual<10?$`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
-  })
-
+ 
   return (
     
 
