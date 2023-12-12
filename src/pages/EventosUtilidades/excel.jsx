@@ -29,12 +29,12 @@ const ExportToExcel = ({ data, fileName, sheetName }) => {
    
     const formattedData = data.map(item => {
       return {
-        TAG: item.alci_ds_tag,
-        DESCRIÇÃO: item.alci_tx_usuario_2,
-        TIPO: item.alci_ds_tipo_alarme_1,
-        ALARME:item.alci_tx_usuario_1,
-        DATA:item.alci_dt_alarme===null?'-':dateFormat(item.alci_dt_alarme.value),
-        HORA:item.alci_dt_alarme===null?'-':timestampFormat(item.alci_dt_alarme.value)
+        TAG: item.even_ds_tag,
+        DESCRIÇÃO: item.even_tx_usuario_2,
+        TIPO: item.even_ds_tipo_alarme_1,
+        ALARME:item.even_tx_usuario_1,
+        DATA:item.even_dt_alarme===null?'-':dateFormat(item.even_dt_alarme.value),
+        HORA:item.even_dt_alarme===null?'-':timestampFormat(item.even_dt_alarme.value)
         
       };
     });

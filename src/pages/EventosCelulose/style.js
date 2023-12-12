@@ -90,7 +90,7 @@ background:#fff;
 >#scrollTable {
   overflow-y:auto;
   margin-bottom:5px;
-  height: 70vh;
+  height: 65vh;
 }
 
 >#scrollTable::-webkit-scrollbar{
