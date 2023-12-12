@@ -1,9 +1,17 @@
+import React from "react";
+import { Link } from "react-router-dom";
 import { Menu } from "antd";
 import { LuFactory } from "react-icons/lu";
 import { CgSmartHomeBoiler } from "react-icons/cg";
 import '../../src/index.css'
 
 const MenuList = () => {
+  const renderLink = (label, to) => (
+    <Link to = {to}>
+      {label}
+    </Link>
+  )
+
   return (
     <Menu 
       className="mainMenu" 
@@ -16,8 +24,8 @@ const MenuList = () => {
           key: 'celulose',
           icon: <LuFactory size={20} />,
           children: [
-            { label: 'Alarmes', key: 'patioDeMadeira' },
-            { label: 'Eventos', key: 'fabDeCelulose' },
+            { label: renderLink('Alarmes', '/'), key: 'alarmesCelulose' },
+            { label: renderLink('Eventos', '/eventos/celulose'), key: 'eventosCelulose' },
             { label: 'Ocorrências', key: 'secagem' },
           ],
         },
@@ -26,8 +34,8 @@ const MenuList = () => {
           key: 'utilidades',
           icon: <CgSmartHomeBoiler size={20} />,
           children: [
-            { label: 'Alarmes', key: 'alarmesUtilidades' },
-            { label: 'Eventos', key: 'eventosUtilidades' },
+            { label: renderLink('Alarmes', '/alarmes/utilidades'), key: 'alarmesUtilidades' },
+            { label: renderLink('Eventos', '/eventos/utilidades'), key: 'eventosUtilidades' },
             { label: 'Ocorrências', key: 'ocorrenciasUtilidades' },
           ],
         },

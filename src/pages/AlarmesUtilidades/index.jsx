@@ -12,12 +12,14 @@ import '../../../src/index.css';
 import api from '../../service/api'
 import ExportToExcel from './excel.jsx'
 
+
+
 const { Header, Sider } = Layout; 
 
-export function AlarmesCelulose() {
+export function AlarmesUtilidades() {
   const scrollContainerRef = useRef(null);
 
-  const [alarmesCelulose, setAlarmesCelulose] = useState([])
+  const [alarmesUtilidades, setAlarmesUtilidades] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [filtroDataInicio,setFiltroDataInicio] = useState()
   const [filtroDataFim,setFiltroDataFim] = useState()
@@ -47,12 +49,12 @@ export function AlarmesCelulose() {
   
   function reset() {
     setCurrentPage(1);
-    setAlarmesCelulose([]);
+    setAlarmesUtilidades([]);
   }
 
   useEffect(()=>{
     
-    async function alarmesCeluloseArray(){
+    async function alarmesUtilidadesArray(){
 
       if(!filtroDataInicio || !filtroDataFim){
         const data = new Date()
@@ -65,23 +67,23 @@ export function AlarmesCelulose() {
         
       }
 
-      if (currentPage === 1 && alarmesCelulose.length === 0) {
+      if (currentPage === 1 && alarmesUtilidades.length === 0) {
         const dataTemp = date()
         
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
          
-        const data = await api.post('/alarmes/celulose', body)
+        const data = await api.post('/alarmes/utilidades', body)
   
-        setAlarmesCelulose(data.data)
+        setAlarmesUtilidades(data.data)
       }else{
         
-        if((currentPage * itemsPerPage)>=alarmesCelulose.length){
+        if((currentPage * itemsPerPage)>=alarmesUtilidades.length){
         const dataTemp = date()
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
          
-        const data = await api.post('/alarmes/celulose', body)
+        const data = await api.post('/alarmes/utilidades', body)
           
-        setAlarmesCelulose([...alarmesCelulose,...data.data])
+        setAlarmesUtilidades([...alarmesUtilidades,...data.data])
         
         }else{
           return
@@ -89,17 +91,18 @@ export function AlarmesCelulose() {
       } 
     }
 
-    alarmesCeluloseArray();
+    alarmesUtilidadesArray();
 
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
 
-  }, [alarmesCelulose, currentPage, itemsPerPage]);
+  }, [alarmesUtilidades, currentPage, itemsPerPage]);
 
  
   return (
     
+
       <Layout>
           <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{paddingLeft: '10px', height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
             {collapsed?<Logo />:<img src={logoCompleta} width={100} className='LogoCompleta'/>}
@@ -121,7 +124,7 @@ export function AlarmesCelulose() {
             
               <MainTable>
               <HeaderTable>
-                <h1>Alarmes Celulose</h1>
+                <h1>Alarmes Utilidades</h1>
                 <div>
                   <div id="itemsPerPage">
                     <span>Exibir</span>
@@ -134,7 +137,7 @@ export function AlarmesCelulose() {
                     </select>
                   </div>
                   <form>
-                    <ExportToExcel data={alarmesCelulose} fileName={'AlarmesCelulose'} id="excel"/>
+                    <ExportToExcel data={alarmesUtilidades} fileName={'AlarmesUtilidades'} id="excel"/>
                     <label>
                       Data de Início:
                       <input
@@ -148,7 +151,6 @@ export function AlarmesCelulose() {
                     </label>
 
                     <label>
-                   
                       Data de Fim:
                       <input
                         type="date"
@@ -166,11 +168,11 @@ export function AlarmesCelulose() {
                         reset()
                       }}>
                       <option value=""></option>
-                        <option value="Digestor">Digestor</option>
-                        <option value="JE3">JE3</option>
-                        <option value="JE2">JE2</option>
-                        <option value="LFB">LFB</option>
-                        <option value="LFC">LFC</option>
+                        <option value="CR3">CR3</option>
+                        <option value="CR4">CR4</option>
+                        <option value="Caustforno">Caustforno</option>
+                        <option value="Sistema Elétrico">Sistema Elétrico</option>
+                        <option value="Caldeiras Auxiliares">Caldeiras Auxiliares</option>
                         <option value="Outros">Outros</option>
                       </select>
                     </div>
@@ -178,7 +180,7 @@ export function AlarmesCelulose() {
                   </form>
                 </div>
               </HeaderTable>
-                {alarmesCelulose.length>0&&
+                {alarmesUtilidades.length>0&&
                 <div id="scrollTable" ref={scrollContainerRef} >
                 <table className="table minha-classe-personalizada" >
                   <thead>
@@ -193,7 +195,7 @@ export function AlarmesCelulose() {
                     </tr>
                   </thead>
                   <tbody>
-                    {alarmesCelulose.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
+                    {alarmesUtilidades.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
                       
                       <tr key={i} data-select={linhasSelecionadas.includes(d.alci_cd_identificador)}>
                         <td>{d.alci_ds_tag}</td>
@@ -201,7 +203,7 @@ export function AlarmesCelulose() {
                         <td>{d.alci_ds_tipo_alarme_1}</td>
                         <td>{d.alci_tx_usuario_1}</td>
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
-                        <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
+                        <td>{d.alci_dt_alarme === null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
                         <td>
                           <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
                             {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}
@@ -215,7 +217,7 @@ export function AlarmesCelulose() {
                 </div>
                 }
                
-                {alarmesCelulose.length>0&&
+                {alarmesUtilidades.length>0&&
                 <nav>
                   <ul className='pagination'>
                     <li className='page-item'>

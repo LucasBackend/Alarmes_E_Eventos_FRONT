@@ -41,9 +41,8 @@ padding: 1rem;
 }
 
 >div #filtroArea select {
-  width: 9rem;
+  width: 16rem;
   height: 2rem;
-  margin-bottom: 3px;
   margin-left: 0;
 }
 

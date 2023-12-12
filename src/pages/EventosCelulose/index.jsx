@@ -14,10 +14,10 @@ import ExportToExcel from './excel.jsx'
 
 const { Header, Sider } = Layout; 
 
-export function AlarmesCelulose() {
+export function EventosCelulose() {
   const scrollContainerRef = useRef(null);
 
-  const [alarmesCelulose, setAlarmesCelulose] = useState([])
+  const [eventosCelulose, setEventosCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [filtroDataInicio,setFiltroDataInicio] = useState()
   const [filtroDataFim,setFiltroDataFim] = useState()
@@ -47,12 +47,12 @@ export function AlarmesCelulose() {
   
   function reset() {
     setCurrentPage(1);
-    setAlarmesCelulose([]);
+    setEventosCelulose([]);
   }
 
   useEffect(()=>{
     
-    async function alarmesCeluloseArray(){
+    async function eventosCeluloseArray(){
 
       if(!filtroDataInicio || !filtroDataFim){
         const data = new Date()
@@ -65,23 +65,23 @@ export function AlarmesCelulose() {
         
       }
 
-      if (currentPage === 1 && alarmesCelulose.length === 0) {
+      if (currentPage === 1 && eventosCelulose.length === 0) {
         const dataTemp = date()
         
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
          
-        const data = await api.post('/alarmes/celulose', body)
+        const data = await api.post('/eventos/celulose', body)
   
-        setAlarmesCelulose(data.data)
+        setEventosCelulose(data.data)
       }else{
         
-        if((currentPage * itemsPerPage)>=alarmesCelulose.length){
+        if((currentPage * itemsPerPage)>=eventosCelulose.length){
         const dataTemp = date()
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
          
-        const data = await api.post('/alarmes/celulose', body)
+        const data = await api.post('/eventos/celulose', body)
           
-        setAlarmesCelulose([...alarmesCelulose,...data.data])
+        setEventosCelulose([...eventosCelulose,...data.data])
         
         }else{
           return
@@ -89,13 +89,13 @@ export function AlarmesCelulose() {
       } 
     }
 
-    alarmesCeluloseArray();
+    eventosCeluloseArray();
 
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
 
-  }, [alarmesCelulose, currentPage, itemsPerPage]);
+  }, [eventosCelulose, currentPage, itemsPerPage]);
 
  
   return (
@@ -121,7 +121,7 @@ export function AlarmesCelulose() {
             
               <MainTable>
               <HeaderTable>
-                <h1>Alarmes Celulose</h1>
+                <h1>Eventos Celulose</h1>
                 <div>
                   <div id="itemsPerPage">
                     <span>Exibir</span>
@@ -134,7 +134,7 @@ export function AlarmesCelulose() {
                     </select>
                   </div>
                   <form>
-                    <ExportToExcel data={alarmesCelulose} fileName={'AlarmesCelulose'} id="excel"/>
+                    <ExportToExcel data={eventosCelulose} fileName={'EventosCelulose'} id="excel"/>
                     <label>
                       Data de Início:
                       <input
@@ -166,11 +166,6 @@ export function AlarmesCelulose() {
                         reset()
                       }}>
                       <option value=""></option>
-                        <option value="Digestor">Digestor</option>
-                        <option value="JE3">JE3</option>
-                        <option value="JE2">JE2</option>
-                        <option value="LFB">LFB</option>
-                        <option value="LFC">LFC</option>
                         <option value="Outros">Outros</option>
                       </select>
                     </div>
@@ -178,7 +173,7 @@ export function AlarmesCelulose() {
                   </form>
                 </div>
               </HeaderTable>
-                {alarmesCelulose.length>0&&
+                {eventosCelulose.length>0&&
                 <div id="scrollTable" ref={scrollContainerRef} >
                 <table className="table minha-classe-personalizada" >
                   <thead>
@@ -193,18 +188,18 @@ export function AlarmesCelulose() {
                     </tr>
                   </thead>
                   <tbody>
-                    {alarmesCelulose.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
+                    {eventosCelulose.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
                       
-                      <tr key={i} data-select={linhasSelecionadas.includes(d.alci_cd_identificador)}>
-                        <td>{d.alci_ds_tag}</td>
-                        <td>{d.alci_tx_usuario_2}</td>
-                        <td>{d.alci_ds_tipo_alarme_1}</td>
-                        <td>{d.alci_tx_usuario_1}</td>
-                        <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
-                        <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
+                      <tr key={i} data-select={linhasSelecionadas.includes(d.even_cd_identificador)}>
+                        <td>{d.even_ds_tag}</td>
+                        <td>{d.even_ds_origem === '' ? '-' : d.even_ds_origem}</td>
+                        <td>{d.even_ds_tipo_alarme_1 === '' ? '-' : d.even_ds_tipo_alarme_1}</td>
+                        <td>{d.even_tx_usuario_1}</td>
+                        <td>{d.even_dt_evento === null ? '-' : dateFormat(d.even_dt_evento.value)}</td>
+                        <td>{d.even_dt_evento === null?'-' : timestampFormat(d.even_dt_evento.value)}</td>
                         <td>
-                          <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
-                            {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}
+                          <Button onClick={()=>{selectTableHandleClick(d.even_cd_identificador)}}>
+                            {linhasSelecionadas.includes(d.even_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}
                           </Button>
                         </td>
                       </tr>
@@ -215,7 +210,7 @@ export function AlarmesCelulose() {
                 </div>
                 }
                
-                {alarmesCelulose.length>0&&
+                {eventosCelulose.length>0&&
                 <nav>
                   <ul className='pagination'>
                     <li className='page-item'>
