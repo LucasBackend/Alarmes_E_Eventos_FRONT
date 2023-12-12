@@ -33,8 +33,8 @@ const ExportToExcel = ({ data, fileName, sheetName }) => {
         DESCRIÇÃO: item.even_tx_usuario_2,
         TIPO: item.even_ds_tipo_alarme_1,
         ALARME:item.even_tx_usuario_1,
-        DATA:item.even_dt_alarme===null?'-':dateFormat(item.even_dt_alarme.value),
-        HORA:item.even_dt_alarme===null?'-':timestampFormat(item.even_dt_alarme.value)
+        DATA:item.even_dt_evento===null?'-':dateFormat(item.even_dt_evento.value),
+        HORA:item.even_dt_evento===null?'-':timestampFormat(item.even_dt_evento.value)
         
       };
     });
