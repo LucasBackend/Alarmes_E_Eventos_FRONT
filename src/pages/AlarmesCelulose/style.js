@@ -140,16 +140,14 @@ overflow-x:hidden;
 }
 `
 
-
 export const MainTable = styled.div`
 width:99%;
-
 border-radius:8px;
 margin-top:10px;
 margin-bottom:10px;
 margin-left:10px;
 background:#fff;
-overflow-y:auto;
+overflow-y:hidden;
 
 >#scrollTable {
   overflow-y:auto;
