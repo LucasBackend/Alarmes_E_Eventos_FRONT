@@ -144,14 +144,13 @@ overflow-x:hidden;
 
 export const MainTable = styled.div`
 width:99%;
-height:91vh;
+
 border-radius:8px;
 margin-top:10px;
 margin-bottom:10px;
 margin-left:10px;
 background:#fff;
-
-
+overflow-y:auto;
 
 >#scrollTable {
   overflow-y:auto;

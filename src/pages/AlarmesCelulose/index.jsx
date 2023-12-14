@@ -158,7 +158,7 @@ export function AlarmesCelulose() {
             {collapsed?<Logo />:<img src={logoCompleta} width={100} className='LogoCompleta'/>}
             <MenuList style={{height: 'auto'}} />
           </Sider>
-          <Layout>
+          <Layout style={{height:'100vh'}}>
             <Header id="header" style={{ padding: 0, background: colorBgContainer}} >
               
               <div className="titulo">

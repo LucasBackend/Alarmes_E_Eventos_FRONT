@@ -206,15 +206,9 @@
   display: none;
 }
 
-.mainPageTable {
-  height: calc(100vh - 78px);
-  background-color: var(--white);
-  margin: 0;
-}
-
 :where(.css-dev-only-do-not-override-nllxry).ant-btn {
   font-size: 14px;
-  height: 32px;
+  
   padding: 1px 10px 4px;
   border-radius: 5px;
 }
