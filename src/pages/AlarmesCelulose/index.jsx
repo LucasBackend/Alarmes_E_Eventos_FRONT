@@ -1,4 +1,7 @@
-import { MainTable,HeaderTable } from './style';
+import { MainTable,Container } from './style';
+import { FiFilter } from "react-icons/fi";
+import { LuFilterX } from "react-icons/lu";
+import { IoCloseOutline } from "react-icons/io5";;
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect, useRef } from 'react';
 import { Button, Layout, theme } from 'antd';
@@ -22,6 +25,7 @@ export function AlarmesCelulose() {
   const [filtroDataInicio,setFiltroDataInicio] = useState()
   const [filtroDataFim,setFiltroDataFim] = useState()
   const [filtroArea,setFiltroArea] = useState('')
+  const [abrirFiltro,setAbrirFiltro] = useState(false)
 
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
@@ -71,8 +75,9 @@ export function AlarmesCelulose() {
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
          
         const data = await api.post('/alarmes/celulose', body)
-  
-        setAlarmesCelulose(data.data)
+        
+        data.data.length>0?setAlarmesCelulose(data.data): null
+        
       }else{
         
         if((currentPage * itemsPerPage)>=alarmesCelulose.length){
@@ -99,43 +104,15 @@ export function AlarmesCelulose() {
 
  
   return (
-    
-      <Layout>
-          <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{paddingLeft: '10px', height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
-            {collapsed?<Logo />:<img src={logoCompleta} width={100} className='LogoCompleta'/>}
-            <MenuList style={{height: 'auto'}} />
-          </Sider>
-          <Layout>
-            <Header style={{ padding: 0, background: colorBgContainer}} >
-              
-              <Button 
-                type='text' 
-                className='toggle'
-                onClick={() => setCollapsed(!collapsed)}
-                icon={collapsed ? <MenuUnfoldOutlined /> : 
-                <MenuFoldOutlined />} 
-              />
-              
-              
-            </Header>
-            
-              <MainTable>
-              <HeaderTable>
-                <h1>Alarmes Celulose</h1>
-                <div>
-                  <div id="itemsPerPage">
-                    <span>Exibir</span>
-                    <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
-                      <option value="20">20</option>
-                      <option value="30">30</option>
-                      <option value="40">40</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </div>
-                  <form>
-                    <ExportToExcel data={alarmesCelulose} fileName={'AlarmesCelulose'} id="excel"/>
-                    <label>
+      <Container>
+        <div id="filtros" data-filter={abrirFiltro}>
+          <span id="titlefilter">
+            Filtros
+          </span>
+          <IoCloseOutline id="closefilter" onClick={()=>{setAbrirFiltro(false)}}/>
+
+          <div id="listFilters">
+          <label>
                       Data de Início:
                       <input
                         type="date"
@@ -174,10 +151,38 @@ export function AlarmesCelulose() {
                         <option value="Outros">Outros</option>
                       </select>
                     </div>
+          </div>
+        </div>
+      <Layout>
+          <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{paddingLeft: '10px', height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
+            {collapsed?<Logo />:<img src={logoCompleta} width={100} className='LogoCompleta'/>}
+            <MenuList style={{height: 'auto'}} />
+          </Sider>
+          <Layout>
+            <Header id="header" style={{ padding: 0, background: colorBgContainer}} >
+              
+              <div className="titulo">
+              <Button 
+                type='text' 
+                className='toggle'
+                onClick={() => setCollapsed(!collapsed)}
+                icon={collapsed ? <MenuUnfoldOutlined /> : 
+                <MenuFoldOutlined />} 
+              />
+              <h1>Alarmes Celulose</h1>
+              </div>
 
-                  </form>
-                </div>
-              </HeaderTable>
+              <div className="diversos">
+                <ExportToExcel data={alarmesCelulose} fileName={'AlarmesCelulose'}/>
+                <button id='filter' onClick={()=>{setAbrirFiltro(!abrirFiltro)}}>
+                {abrirFiltro?<LuFilterX />:<FiFilter  />}
+                </button>
+              </div>
+              
+            </Header>
+            
+              <MainTable>
+              
                 {alarmesCelulose.length>0&&
                 <div id="scrollTable" ref={scrollContainerRef} >
                 <table className="table minha-classe-personalizada" >
@@ -237,13 +242,24 @@ export function AlarmesCelulose() {
                     </li>
 
                   </ul>
+
+                  <div id="itemsPerPage">
+                    <label>Exibir</label>
+                    <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
+                      <option value="20">20</option>
+                      <option value="30">30</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
                 </nav>
                 }
                 
               </MainTable>
           </Layout>
       </Layout>
-
+      </Container>
                 
   )
 

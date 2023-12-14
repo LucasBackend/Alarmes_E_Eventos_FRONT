@@ -1,84 +1,150 @@
 import styled from 'styled-components';
 
 
-export const HeaderTable = styled.div `
-width:99%;
-height: 100px;
-background:#f9f9f9;
-margin: 0 auto;
-border-radius:8px;
-margin-top: 10px;
-margin-bottom: 3px;
-padding: 1rem;
+export const Container = styled.div`
+width:100%;
+height:100vh;
+position:relative;
+overflow-x:hidden;
 
->h1 {
-  font-size: 1.8rem;
-}
+>#filtros{
+  background:black;
+  width:260px;
+  height: 93.3%;
+  opacity:1;
+  position:absolute;
+  z-index:5;
+  right:0;
+  bottom:0;
+  background:#2A3042;
+  border-radius:3px;
+  transform: translateX(0);
+  transition: max-height 0.5s ease-in-out, transform 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 
->div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin: 2.5rem 0;
-}
-
->div #itemsPerPage {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2px;
-  margin-top: 1.5rem;
-}
-
->div #itemsPerPage span {
-  margin-top: 3px;
-}
-
->div #filtroArea {
-  display: flex;
-  flex-direction: column;
-}
-
->div #filtroArea select {
-  width: 9rem;
-  height: 2rem;
-  margin-bottom: 3px;
-  margin-left: 0;
-}
-
->div form {
-  display: flex;
-  gap: 2rem;
-
-  >button{
-    height:40px;
-    width: 40px;
-    background:none;
+  &[data-filter="false"]{
+    position:absolute;
+    z-index:5;
+    right:0;
+    bottom:0;
+    opacity: 0;
+    transform: translateX(100%);
+   
+    
+    
   }
-  >button svg{
+
+  >#titlefilter{
+    position:absolute;
+    color:white;
+    font-size:14px;
+    font-family:"Montserrat",sans-serif;
+    font-weight:normal;
+    top:5px;
+    left: 10px;
+    
+  }
+
+  >#closefilter{
+    top: 0;
+    right:0;
+    position:absolute;
+    stroke:white;
     width:25px;
     height:25px;
+    cursor: pointer;
+  }
+
+}
+
+#header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  >.titulo{
+    display:flex;
+    align-items:center;
+
+    >h1{
+    margin-left: 30px;
+    font-family:"Montserrat";
+    font-size:22px;
+    margin-bottom:0
+  }
+  }
+
+  >.diversos{
+    background:transparent;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-right:10px;
+
+    >#excel{
+      width:35px;
+      height:35px;
+      background:#556EE6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:3px;
+      transition: background 0.3s ease;
+
+      &:hover{
+        background:#7499E1;
+      }
+
+      >svg{
+        width:20px;
+        height:20px;
+        fill:white;
+      }
+    }
+
+    >#filter{
+      width:35px;
+      height:35px;
+      background:#556EE6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:3px;
+      transition: background 0.3s ease;
+
+      &:hover{
+        background:#7499E1;
+      }
+
+      >svg{
+        width:20px;
+        height:20px;
+        fill:transparent;
+        stroke:white;
+      }
+
+    }
+  
+  }
+  
+}
+
+#listFilters{
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  padding:15px;
+
+  >*{
+    display:flex;
+    flex-direction:column;
   }
 }
-
->div form label{
-  display: flex;
-  flex-direction: column;
-}
-
->div select {
-  width: 5rem;
-  align-items: center;
-  text-align: center;
-  margin-left: 5px;
-}
-
 `
+
 
 export const MainTable = styled.div`
 width:99%;
-height:95%;
+height:91vh;
 border-radius:8px;
 margin-top:10px;
 margin-bottom:10px;
@@ -90,7 +156,7 @@ background:#fff;
 >#scrollTable {
   overflow-y:auto;
   margin-bottom:5px;
-  height: 65vh;
+  height: 90%;
 }
 
 >#scrollTable::-webkit-scrollbar{
@@ -174,6 +240,24 @@ background:#fff;
 
 >nav {
   margin-top:30px;
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  position:relative;
+
+  >#itemsPerPage{
+    display:flex;
+    align-items:center;
+    position:absolute;
+    right:10px;
+    gap:5px;
+    font-size:16px;
+
+    >*{
+      cursor: pointer;
+    }
+  }
+
 }
 
 >nav ul li a{
