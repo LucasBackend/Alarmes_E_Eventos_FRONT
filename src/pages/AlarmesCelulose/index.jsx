@@ -112,7 +112,7 @@ export function AlarmesCelulose() {
           <IoCloseOutline id="closefilter" onClick={()=>{setAbrirFiltro(false)}}/>
 
           <div id="listFilters">
-          <label>
+            <label>
                       Data de Início:
                       <input
                         type="date"
@@ -122,9 +122,9 @@ export function AlarmesCelulose() {
                           reset()
                         }}
                       />
-                    </label>
+            </label>
 
-                    <label>
+            <label>
                    
                       Data de Fim:
                       <input
@@ -135,8 +135,9 @@ export function AlarmesCelulose() {
                           reset()
                         }}
                       />
-                    </label>
-                    <div id="filtroArea">
+            </label>
+
+            <div id="filtroArea">
                       <label>Área</label>
                       <select name="" id="" onChange={(e) => {
                         setFiltroArea(e.target.value)
@@ -150,11 +151,11 @@ export function AlarmesCelulose() {
                         <option value="LFC">LFC</option>
                         <option value="Outros">Outros</option>
                       </select>
-                    </div>
+            </div>
           </div>
         </div>
       <Layout>
-          <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{paddingLeft: '10px', height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
+          <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
             {collapsed?<Logo />:<img src={logoCompleta} width={100} className='LogoCompleta'/>}
             <MenuList style={{height: 'auto'}} />
           </Sider>

@@ -128,26 +128,46 @@ overflow-x:hidden;
 }
 
 #listFilters{
-  margin-top:10px;
+  margin-top:20px;
   display:flex;
   flex-direction:column;
   padding:15px;
+  gap:10px;
 
   >*{
+    font-family:"Montserrat",sans-serif;
+    font-size:14px;
+    color:white;
     display:flex;
     flex-direction:column;
+    gap:5px;
   }
+  
+  >label input{
+    padding:5px;
+  }
+
+  >#filtroarea input, label{
+    font-family:"Montserrat",sans-serif;
+  }
+
+  >#filtroArea select{
+    padding:5px;
+  }
+
 }
 `
 
 export const MainTable = styled.div`
 width:99%;
+height:100%;
 border-radius:8px;
 margin-top:10px;
 margin-bottom:10px;
 margin-left:10px;
 background:#fff;
 overflow-y:hidden;
+
 
 >#scrollTable {
   overflow-y:auto;
