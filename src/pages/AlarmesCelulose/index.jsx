@@ -1,4 +1,5 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { SlRefresh } from "react-icons/sl";
 import { Button, Layout, theme } from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useRef, useState } from 'react';
@@ -25,6 +26,9 @@ export function AlarmesCelulose() {
   const [filtroDataInicio,setFiltroDataInicio] = useState()
   const [filtroDataFim,setFiltroDataFim] = useState()
   const [filtroArea,setFiltroArea] = useState('')
+  const [filtroSession,setFiltroSession] = useState('')
+
+
   const [abrirFiltro,setAbrirFiltro] = useState(false)
 
   const numbers = [...Array(2000).keys()].slice(1)
@@ -64,8 +68,11 @@ export function AlarmesCelulose() {
 
   function handleResetFilter(){
    document.getElementById("selectFiltroArea").selectedIndex  = 0
+   document.getElementById("selectProcSession").selectedIndex = 0
    
    setFiltroArea('')
+   setFiltroSession('')
+
     const data = new Date()
     const anoatual = data.getFullYear()
     const mesAtual = data.getMonth()+1
@@ -106,7 +113,7 @@ export function AlarmesCelulose() {
         const dataTempInicio = date(true)
         const dataTempFim = date(false)
         
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim}
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession}
          
         const data = await api.post('/alarmes/celulose', body)
         
@@ -116,7 +123,7 @@ export function AlarmesCelulose() {
         
         if((currentPage * itemsPerPage)>=alarmesCelulose.length && alarmesCelulose.length>=itemsPerPage){
         const dataTemp = date()
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession}
                   
         const data = await api.post('/alarmes/celulose', body)
           
@@ -191,6 +198,29 @@ export function AlarmesCelulose() {
                         <option value="Outros">Outros</option>
                       </select>
             </div>
+
+            <div id="filtroproc">
+                      <label>Proc Session</label>
+                      <select name="" id="selectProcSession" onChange={(e) => {
+                        setFiltroSession(e.target.value)
+                        reset()
+                      }}>
+                      <option value=""></option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="13">13</option>
+                        <option value="16">16</option>
+                      </select>
+            </div>
           </div>
         </div>
       <Layout>
@@ -217,6 +247,12 @@ export function AlarmesCelulose() {
               </div>
 
               <div className="diversos">
+                <button id='refresh' onClick={()=>{
+                  setCurrentPage(1)
+                  setAlarmesCelulose([])
+                }}>
+                <SlRefresh />
+                </button>
                 <ExportToExcel data={alarmesCelulose} fileName={'AlarmesCelulose'}/>
                 <button id='filter' onClick={()=>{setAbrirFiltro(!abrirFiltro)}}>
                 {abrirFiltro?<LuFilterX />:<FiFilter  />}

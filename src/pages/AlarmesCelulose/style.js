@@ -123,6 +123,29 @@ overflow-x:hidden;
       }
 
     }
+
+    >#refresh{
+      width:35px;
+      height:35px;
+      background:#556EE6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:3px;
+      transition: background 0.3s ease;
+
+      &:hover{
+        background:#7499E1;
+      }
+
+      >svg{
+        width:20px;
+        height:20px;
+        fill:white;
+        
+      }
+
+    }
   
   }
   
@@ -150,15 +173,16 @@ overflow-x:hidden;
     border-radius:2px;
   }
 
-  >#filtroarea input, label{
+  >#filtroArea input, label, #filtroproc input, label{
     font-family:"Montserrat",sans-serif;
   }
 
-  >#filtroArea select{
+  >#filtroArea select, #filtroproc select{
     padding:5px;
     border-radius:2px;
   }
 
+  
   >#LimparFiltros{
     background:red;
     position:absolute;
