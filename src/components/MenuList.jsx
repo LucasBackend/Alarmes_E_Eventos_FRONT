@@ -27,15 +27,16 @@ const MenuList = () => {
       theme='dark' 
       mode="inline" 
       style={{ height: "auto", overflow: "auto" }} 
+      defaultOpenKeys={['celulose','utilidades']}
       items={[
         {
           label: home(),
           key: 'HOME',
-          icon: <HiOutlineHome size={20}/>,
+          icon: <HiOutlineHome size={20} stroke="white"/>,
                     
         },
         {
-          label: 'CELULOSE',
+          label: "CELULOSE",
           key: 'celulose',
           icon: <LuFactory size={20} />,
           children: [

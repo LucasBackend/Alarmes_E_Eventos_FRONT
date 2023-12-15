@@ -40,13 +40,17 @@ export function AlarmesCelulose() {
     token: { colorBgContainer},
   } = theme.useToken();
 
-  function date(){
+  function date(tipo){
     const data = new Date()
     const anoatual = data.getFullYear()
     const mesAtual = data.getMonth()+1
     const diaAtual = data.getDate() 
 
-    return `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`
+    if(tipo){
+    return `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual} 00:00`
+    }else{
+      return `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual} 23:59`
+    }
   }
   
   function reset() {
@@ -58,6 +62,31 @@ export function AlarmesCelulose() {
     window.location.href = "https://apps.powerapps.com/play/e/default-a7109315-9727-4adf-97ad-4849bb63edcb/a/c1a97402-4d2d-4397-a1a7-ae41801b791b?tenantId=a7109315-9727-4adf-97ad-4849bb63edcb&source=portal&screenColor=rgba(42%2C%2048%2C%2066%2C%201)&hidenavbar=true"
   }
 
+  function handleResetFilter(){
+   document.getElementById("selectFiltroArea").selectedIndex  = 0
+   
+   setFiltroArea('')
+    const data = new Date()
+    const anoatual = data.getFullYear()
+    const mesAtual = data.getMonth()+1
+    const diaAtual = data.getDate() 
+
+    setAbrirFiltro(false)
+
+    setFiltroDataInicio(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T00:00`)
+    setFiltroDataFim(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T23:59`)
+
+    document.getElementById("filtroDataInicio").value = `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T00:00`
+    document.getElementById("filtroDataFim").value = `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T23:59`
+
+    setCurrentPage(1)
+    setAlarmesCelulose([])
+   
+  }
+
+
+
+
   useEffect(()=>{
     
     async function alarmesCeluloseArray(){
@@ -68,15 +97,16 @@ export function AlarmesCelulose() {
         const mesAtual = data.getMonth()+1
         const diaAtual = data.getDate() 
    
-        setFiltroDataInicio(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
-        setFiltroDataFim(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
+        setFiltroDataInicio(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T00:00`)
+        setFiltroDataFim(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T23:59`)
         
       }
 
       if (currentPage === 1 && alarmesCelulose.length === 0) {
-        const dataTemp = date()
+        const dataTempInicio = date(true)
+        const dataTempFim = date(false)
         
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim}
          
         const data = await api.post('/alarmes/celulose', body)
         
@@ -84,10 +114,10 @@ export function AlarmesCelulose() {
         
       }else{
         
-        if((currentPage * itemsPerPage)>=alarmesCelulose.length){
+        if((currentPage * itemsPerPage)>=alarmesCelulose.length && alarmesCelulose.length>=itemsPerPage){
         const dataTemp = date()
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
-         
+                  
         const data = await api.post('/alarmes/celulose', body)
           
         setAlarmesCelulose([...alarmesCelulose,...data.data])
@@ -116,10 +146,14 @@ export function AlarmesCelulose() {
           <IoCloseOutline id="closefilter" onClick={()=>{setAbrirFiltro(false)}}/>
 
           <div id="listFilters">
+            <button onClick={handleResetFilter} id='LimparFiltros'>
+              Limpar Filtros
+            </button>
             <label>
                       Data de Início:
                       <input
-                        type="date"
+                        type="datetime-local"
+                        id='filtroDataInicio'
                         defaultValue={filtroDataInicio}
                         onChange={(e) => {
                           setFiltroDataInicio(e.target.value)
@@ -132,7 +166,8 @@ export function AlarmesCelulose() {
                    
                       Data de Fim:
                       <input
-                        type="date"
+                        type="datetime-local"
+                        id='filtroDataFim'
                         defaultValue={filtroDataFim}
                         onChange={(e)=> {
                           setFiltroDataFim(e.target.value)
@@ -143,7 +178,7 @@ export function AlarmesCelulose() {
 
             <div id="filtroArea">
                       <label>Área</label>
-                      <select name="" id="" onChange={(e) => {
+                      <select name="" id="selectFiltroArea" onChange={(e) => {
                         setFiltroArea(e.target.value)
                         reset()
                       }}>
@@ -161,7 +196,11 @@ export function AlarmesCelulose() {
       <Layout>
           <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
             {collapsed?<Logo/>:<img src={logoCompleta} width={100} className='LogoCompleta' onClick={navigate}/>}
+        
             <MenuList style={{height: 'auto'}} />
+            
+           
+       
           </Sider>
           <Layout style={{height:'100vh',background:"#F4F6F9"}}>
             <Header id="header" style={{ padding: 0, background: colorBgContainer}} >
@@ -199,6 +238,8 @@ export function AlarmesCelulose() {
                       <th>Alarme</th>
                       <th>Data</th>
                       <th>Hora</th>
+                      <th>Área</th>
+                      <th>Proc Session</th>
                       <th>  </th>
                     </tr>
                   </thead>
@@ -212,6 +253,8 @@ export function AlarmesCelulose() {
                         <td>{d.alci_tx_usuario_1}</td>
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
+                        <td>{d.alci_ds_area}</td>
+                        <td>{d.alci_ds_vsub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
                         <td>
                           <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
                             {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}
@@ -325,7 +368,7 @@ export function AlarmesCelulose() {
     const segundos = dataCorrigida.getMinutes();
     const milisegundos = dataCorrigida.getMilliseconds();
 
-    return `${hora<10?`${0}${hora}`:hora}:${minutos}:${segundos}:${milisegundos}`
+    return `${hora<10?`${0}${hora}`:hora}:${minutos<10?`${0}${minutos}`:minutos}:${segundos<10?`${0}${segundos}`:segundos}:${milisegundos}`
   }
 
   function selectTableHandleClick(key){

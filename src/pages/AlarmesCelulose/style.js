@@ -59,7 +59,7 @@ overflow-x:hidden;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  box-shadow: 3px 3px 0px 0px rgba(221,226,231,1);
+  box-shadow: 3px 2px 0px 0px rgba(221,226,231,1);
 
   >.titulo{
     display:flex;
@@ -133,7 +133,7 @@ overflow-x:hidden;
   display:flex;
   flex-direction:column;
   padding:15px;
-  gap:10px;
+  gap:15px;
 
   >*{
     font-family:"Montserrat",sans-serif;
@@ -141,11 +141,13 @@ overflow-x:hidden;
     color:white;
     display:flex;
     flex-direction:column;
-    gap:5px;
+    gap:10px;
+    
   }
   
   >label input{
     padding:5px;
+    border-radius:2px;
   }
 
   >#filtroarea input, label{
@@ -154,6 +156,28 @@ overflow-x:hidden;
 
   >#filtroArea select{
     padding:5px;
+    border-radius:2px;
+  }
+
+  >#LimparFiltros{
+    background:red;
+    position:absolute;
+    bottom: 20px;
+    left:25%;
+    right:25%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:7px;
+    border-radius:3px;
+    background:#556EE6;
+    font-family:'Montserrat',sans-serif;
+    cursor: pointer;
+    font-weight:normal;
+
+    &:hover{
+        background:#7499E1;
+      }
   }
 
 }
@@ -221,7 +245,7 @@ overflow-y:hidden;
     text-align: center;
   }
 
-  > tbody tr td:nth-child(7){
+  > tbody tr td:nth-child(9){
     text-align: end;
     padding-bottom: 4px; 
   }

@@ -144,10 +144,7 @@
   padding-inline: calc(50% - 12px - 8px);
 }
 
-.ant-menu-item{
-  color: white;
-  
-}
+
 
 .ant-menu-dark.ant-menu-submenu>.ant-menu, 
 .ant-menu-dark>.ant-menu.ant-menu-submenu>.ant-menu {
