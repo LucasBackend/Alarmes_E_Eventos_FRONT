@@ -39,7 +39,8 @@
   justify-content: center;
   color: var(--white);
   padding: 1rem;
-  margin-right: 12px
+  margin-right: 6px;
+  cursor: pointer;
 }
 
 .logoIcon {
@@ -143,6 +144,11 @@
   padding-inline: calc(50% - 12px - 8px);
 }
 
+.ant-menu-item{
+  color: white;
+  
+}
+
 .ant-menu-dark.ant-menu-submenu>.ant-menu, 
 .ant-menu-dark>.ant-menu.ant-menu-submenu>.ant-menu {
   background-color: var(--sami-submenu);
@@ -162,7 +168,8 @@
 }
 
 .LogoCompleta{
-  margin: 0 auto 0;
+  margin: 0 31% 0;
+  cursor: pointer;
 }
 
 .pagination {

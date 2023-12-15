@@ -59,6 +59,7 @@ overflow-x:hidden;
   display:flex;
   align-items:center;
   justify-content:space-between;
+  box-shadow: 3px 3px 0px 0px rgba(221,226,231,1);
 
   >.titulo{
     display:flex;

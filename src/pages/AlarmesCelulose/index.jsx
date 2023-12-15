@@ -1,19 +1,19 @@
-import { MainTable,Container } from './style';
-import { FiFilter } from "react-icons/fi";
-import { LuFilterX } from "react-icons/lu";
-import { IoCloseOutline } from "react-icons/io5";;
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useEffect, useRef } from 'react';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Button, Layout, theme } from 'antd';
-import { PiTargetThin } from "react-icons/pi";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClose } from "react-icons/ai";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { FiFilter } from "react-icons/fi";
+import { IoCloseOutline } from "react-icons/io5";
+import { LuFilterX } from "react-icons/lu";
+import { PiTargetThin } from "react-icons/pi";
+import '../../../src/index.css';
+import logoCompleta from '../../assets/logocompleta.png';
 import Logo from '../../components/Logo';
 import MenuList from '../../components/MenuList';
-import logoCompleta from '../../assets/logocompleta.png'
-import '../../../src/index.css';
-import api from '../../service/api'
-import ExportToExcel from './excel.jsx'
+import api from '../../service/api';
+import ExportToExcel from './excel.jsx';
+import { Container, MainTable } from './style';
 
 const { Header, Sider } = Layout; 
 
@@ -52,6 +52,10 @@ export function AlarmesCelulose() {
   function reset() {
     setCurrentPage(1);
     setAlarmesCelulose([]);
+  }
+
+  function navigate(){
+    window.location.href = "https://apps.powerapps.com/play/e/default-a7109315-9727-4adf-97ad-4849bb63edcb/a/c1a97402-4d2d-4397-a1a7-ae41801b791b?tenantId=a7109315-9727-4adf-97ad-4849bb63edcb&source=portal&screenColor=rgba(42%2C%2048%2C%2066%2C%201)&hidenavbar=true"
   }
 
   useEffect(()=>{
@@ -156,10 +160,10 @@ export function AlarmesCelulose() {
         </div>
       <Layout>
           <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
-            {collapsed?<Logo />:<img src={logoCompleta} width={100} className='LogoCompleta'/>}
+            {collapsed?<Logo/>:<img src={logoCompleta} width={100} className='LogoCompleta' onClick={navigate}/>}
             <MenuList style={{height: 'auto'}} />
           </Sider>
-          <Layout style={{height:'100vh'}}>
+          <Layout style={{height:'100vh',background:"#F4F6F9"}}>
             <Header id="header" style={{ padding: 0, background: colorBgContainer}} >
               
               <div className="titulo">
