@@ -1,18 +1,20 @@
-import { MainTable,HeaderTable } from './style';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useEffect, useRef } from 'react';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { SlRefresh } from "react-icons/sl";
 import { Button, Layout, theme } from 'antd';
-import { PiTargetThin } from "react-icons/pi";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect, useRef, useState } from 'react';
 import { AiOutlineClose } from "react-icons/ai";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { FiFilter } from "react-icons/fi";
+import { IoCloseOutline } from "react-icons/io5";
+import { LuFilterX } from "react-icons/lu";
+import { PiTargetThin } from "react-icons/pi";
+import '../../../src/index.css';
+import logoCompleta from '../../assets/logocompleta.png';
 import Logo from '../../components/Logo';
 import MenuList from '../../components/MenuList';
-import logoCompleta from '../../assets/logocompleta.png'
-import '../../../src/index.css';
-import api from '../../service/api'
-import ExportToExcel from './excel.jsx'
-
-
+import api from '../../service/api';
+import ExportToExcel from './excel.jsx';
+import { Container, MainTable } from './style';
 
 const { Header, Sider } = Layout; 
 
@@ -21,9 +23,19 @@ export function AlarmesUtilidades() {
 
   const [alarmesUtilidades, setAlarmesUtilidades] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
+
+
   const [filtroDataInicio,setFiltroDataInicio] = useState()
   const [filtroDataFim,setFiltroDataFim] = useState()
   const [filtroArea,setFiltroArea] = useState('')
+  const [filtroSession,setFiltroSession] = useState('')
+  const [filtroTag,setFiltroTag] = useState('')
+  const [filtroTipo,setFiltroTipo] = useState('')
+  const [filtroAlarme,setFiltroAlarme] = useState('')
+  const [filtroDescricao,setFiltroDescricao] = useState('')
+
+
+  const [abrirFiltro,setAbrirFiltro] = useState(false)
 
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
@@ -38,19 +50,58 @@ export function AlarmesUtilidades() {
     token: { colorBgContainer},
   } = theme.useToken();
 
-  function date(){
+  function date(tipo){
     const data = new Date()
     const anoatual = data.getFullYear()
     const mesAtual = data.getMonth()+1
     const diaAtual = data.getDate() 
 
-    return `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`
+    if(tipo){
+    return `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual} 00:00`
+    }else{
+      return `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual} 23:59`
+    }
   }
   
   function reset() {
     setCurrentPage(1);
     setAlarmesUtilidades([]);
   }
+
+  function navigate(){
+    window.location.href = "https://apps.powerapps.com/play/e/default-a7109315-9727-4adf-97ad-4849bb63edcb/a/c1a97402-4d2d-4397-a1a7-ae41801b791b?tenantId=a7109315-9727-4adf-97ad-4849bb63edcb&source=portal&screenColor=rgba(42%2C%2048%2C%2066%2C%201)&hidenavbar=true"
+  }
+
+  function handleResetFilter(){
+   document.getElementById("selectFiltroArea").selectedIndex  = 0
+   document.getElementById("selectProcSession").selectedIndex = 0
+   
+   setFiltroArea('')
+   setFiltroSession('')
+   setFiltroTag('')
+   setFiltroTipo('')
+   setFiltroAlarme('')
+   setFiltroDescricao('')
+
+    const data = new Date()
+    const anoatual = data.getFullYear()
+    const mesAtual = data.getMonth()+1
+    const diaAtual = data.getDate() 
+
+    setAbrirFiltro(false)
+
+    setFiltroDataInicio(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T00:00`)
+    setFiltroDataFim(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T23:59`)
+
+    document.getElementById("filtroDataInicio").value = `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T00:00`
+    document.getElementById("filtroDataFim").value = `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T23:59`
+
+    setCurrentPage(1)
+    setAlarmesUtilidades([])
+   
+  }
+
+
 
   useEffect(()=>{
     
@@ -62,28 +113,31 @@ export function AlarmesUtilidades() {
         const mesAtual = data.getMonth()+1
         const diaAtual = data.getDate() 
    
-        setFiltroDataInicio(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
-        setFiltroDataFim(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}`)
+        setFiltroDataInicio(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T00:00`)
+        setFiltroDataFim(`${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T23:59`)
         
       }
 
       if (currentPage === 1 && alarmesUtilidades.length === 0) {
-        const dataTemp = date()
+        const dataTempInicio = date(true)
+        const dataTempFim = date(false)
         
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
          
         const data = await api.post('/alarmes/utilidades', body)
-  
-        setAlarmesUtilidades(data.data)
+        
+        data.data.length>0?setAlarmesUtilidades(data.data): null
+                
       }else{
         
-        if((currentPage * itemsPerPage)>=alarmesUtilidades.length){
+        if((currentPage * itemsPerPage)>=alarmesUtilidades.length && alarmesUtilidades.length>=itemsPerPage){
         const dataTemp = date()
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp}
-         
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
+                  
         const data = await api.post('/alarmes/utilidades', body)
           
         setAlarmesUtilidades([...alarmesUtilidades,...data.data])
+        
         
         }else{
           return
@@ -101,16 +155,147 @@ export function AlarmesUtilidades() {
 
  
   return (
-    
+      <Container>
+        <div id="filtros" data-filter={abrirFiltro}>
+          <span id="titlefilter">
+            Filtros
+          </span>
+          <IoCloseOutline id="closefilter" onClick={()=>{setAbrirFiltro(false)}}/>
 
+          <div id="listFilters">
+            <button onClick={handleResetFilter} id='LimparFiltros'>
+              Limpar Filtros
+            </button>
+            <label>
+                      Data de Início:
+                      <input
+                        type="datetime-local"
+                        id='filtroDataInicio'
+                        defaultValue={filtroDataInicio}
+                        onChange={(e) => {
+                          setFiltroDataInicio(e.target.value)
+                          reset()
+                        }}
+                      />
+            </label>
+
+            <label>
+                   
+                      Data de Fim:
+                      <input
+                        type="datetime-local"
+                        id='filtroDataFim'
+                        defaultValue={filtroDataFim}
+                        onChange={(e)=> {
+                          setFiltroDataFim(e.target.value)
+                          reset()
+                        }}
+                      />
+            </label>
+
+            <div id="filtroArea">
+                      <label>Área</label>
+                      <select name="" id="selectFiltroArea" onChange={(e) => {
+                        setFiltroArea(e.target.value)
+                        reset()
+                      }}>
+                      <option value=""></option>
+                        <option value="CR3">CR3</option>
+                        <option value="CR4">CR4</option>
+                        <option value="CAUSTFORNO">CAUSTFORNO</option>
+                        <option value="SISTEMA ELETRICO">SISTEMA ELETRICO</option>
+                        <option value="CALDEIRAS AUXILIARES">CALDEIRAS AUXILIARES</option>
+                        <option value="OUTROS">OUTROS</option>
+                      </select>
+            </div>
+
+            <div id="filtrotag">
+              <label htmlFor="labelFiltroTag">Tag</label>
+              <input type="text" 
+              id='labelFiltroTag'
+              value={filtroTag}
+              onChange={(e)=>{
+                setFiltroTag(e.target.value)
+                reset()
+              }}
+              />
+            </div>
+
+            <div id="filtroproc">
+                      <label>Proc Session</label>
+                      <select name="" id="selectProcSession" onChange={(e) => {
+                        setFiltroSession(e.target.value)
+                        reset()
+                      }}>
+                      <option value=""></option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                      </select>
+            </div>
+
+            <div id="filtrotipo">
+              <label htmlFor="labelFiltroTipo">Tipo</label>
+              <input type="text"
+               id='labelFiltroTipo'
+               value={filtroTipo}
+               onChange={(e)=>{
+                setFiltroTipo(e.target.value)
+                reset()
+               }}
+               />
+            </div>
+
+            <div id="filtroalarme">
+              <label htmlFor="labelFiltroAlarme">Alarme</label>
+              <input type="text"
+               id='labelFiltroAlarme'
+               value={filtroAlarme}
+               onChange={(e)=>{
+                setFiltroAlarme(e.target.value)
+                reset()
+               }}
+               />
+            </div>
+
+            <div id="filtrodescricao">
+              <label htmlFor="labelFiltroDescricao">Descrição</label>
+              <input type="text"
+               id='labelFiltroDescricao'
+               value={filtroDescricao}
+               onChange={(e)=>{
+                setFiltroDescricao(e.target.value)
+                reset()
+               }}
+               />
+            </div>
+          </div>
+        </div>
       <Layout>
-          <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{paddingLeft: '10px', height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
-            {collapsed?<Logo />:<img src={logoCompleta} width={100} className='LogoCompleta'/>}
+          <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
+            {collapsed?<Logo/>:<img src={logoCompleta} width={100} className='LogoCompleta' onClick={navigate}/>}
+        
             <MenuList style={{height: 'auto'}} />
+            
+           
+       
           </Sider>
-          <Layout>
-            <Header style={{ padding: 0, background: colorBgContainer}} >
+          <Layout style={{height:'100vh',background:"#F4F6F9"}}>
+            <Header id="header" style={{ padding: 0, background: colorBgContainer}} >
               
+              <div className="titulo">
               <Button 
                 type='text' 
                 className='toggle'
@@ -118,68 +303,26 @@ export function AlarmesUtilidades() {
                 icon={collapsed ? <MenuUnfoldOutlined /> : 
                 <MenuFoldOutlined />} 
               />
-              
+              <h1>Alarmes Utilidades</h1>
+              </div>
+
+              <div className="diversos">
+                <button id='refresh' onClick={()=>{
+                  setCurrentPage(1)
+                  setAlarmesUtilidades([])
+                }}>
+                <SlRefresh />
+                </button>
+                <ExportToExcel data={alarmesUtilidades} fileName={'AlarmesUtilidades'}/>
+                <button id='filter' onClick={()=>{setAbrirFiltro(!abrirFiltro)}}>
+                {abrirFiltro?<LuFilterX />:<FiFilter  />}
+                </button>
+              </div>
               
             </Header>
             
               <MainTable>
-              <HeaderTable>
-                <h1>Alarmes Utilidades</h1>
-                <div>
-                  <div id="itemsPerPage">
-                    <span>Exibir</span>
-                    <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
-                      <option value="20">20</option>
-                      <option value="30">30</option>
-                      <option value="40">40</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </div>
-                  <form>
-                    <ExportToExcel data={alarmesUtilidades} fileName={'AlarmesUtilidades'} id="excel"/>
-                    <label>
-                      Data de Início:
-                      <input
-                        type="date"
-                        defaultValue={filtroDataInicio}
-                        onChange={(e) => {
-                          setFiltroDataInicio(e.target.value)
-                          reset()
-                        }}
-                      />
-                    </label>
-
-                    <label>
-                      Data de Fim:
-                      <input
-                        type="date"
-                        defaultValue={filtroDataFim}
-                        onChange={(e)=> {
-                          setFiltroDataFim(e.target.value)
-                          reset()
-                        }}
-                      />
-                    </label>
-                    <div id="filtroArea">
-                      <label>Área</label>
-                      <select name="" id="" onChange={(e) => {
-                        setFiltroArea(e.target.value)
-                        reset()
-                      }}>
-                      <option value=""></option>
-                        <option value="CR3">CR3</option>
-                        <option value="CR4">CR4</option>
-                        <option value="Caustforno">Caustforno</option>
-                        <option value="Sistema Elétrico">Sistema Elétrico</option>
-                        <option value="Caldeiras Auxiliares">Caldeiras Auxiliares</option>
-                        <option value="Outros">Outros</option>
-                      </select>
-                    </div>
-
-                  </form>
-                </div>
-              </HeaderTable>
+              
                 {alarmesUtilidades.length>0&&
                 <div id="scrollTable" ref={scrollContainerRef} >
                 <table className="table minha-classe-personalizada" >
@@ -191,6 +334,8 @@ export function AlarmesUtilidades() {
                       <th>Alarme</th>
                       <th>Data</th>
                       <th>Hora</th>
+                      <th>Área</th>
+                      <th>Proc Session</th>
                       <th>  </th>
                     </tr>
                   </thead>
@@ -203,7 +348,9 @@ export function AlarmesUtilidades() {
                         <td>{d.alci_ds_tipo_alarme_1}</td>
                         <td>{d.alci_tx_usuario_1}</td>
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
-                        <td>{d.alci_dt_alarme === null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
+                        <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
+                        <td>{d.alci_ds_area}</td>
+                        <td>{d.alci_ds_vsub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
                         <td>
                           <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
                             {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}
@@ -239,13 +386,24 @@ export function AlarmesUtilidades() {
                     </li>
 
                   </ul>
+
+                  <div id="itemsPerPage">
+                    <label>Exibir</label>
+                    <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
+                      <option value="20">20</option>
+                      <option value="30">30</option>
+                      <option value="40">40</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
                 </nav>
                 }
                 
               </MainTable>
           </Layout>
       </Layout>
-
+      </Container>
                 
   )
 
@@ -306,7 +464,7 @@ export function AlarmesUtilidades() {
     const segundos = dataCorrigida.getMinutes();
     const milisegundos = dataCorrigida.getMilliseconds();
 
-    return `${hora<10?`${0}${hora}`:hora}:${minutos}:${segundos}:${milisegundos}`
+    return `${hora<10?`${0}${hora}`:hora}:${minutos<10?`${0}${minutos}`:minutos}:${segundos<10?`${0}${segundos}`:segundos}:${milisegundos}`
   }
 
   function selectTableHandleClick(key){

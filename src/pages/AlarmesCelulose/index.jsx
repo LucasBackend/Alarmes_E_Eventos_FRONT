@@ -23,10 +23,16 @@ export function AlarmesCelulose() {
 
   const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
+
+
   const [filtroDataInicio,setFiltroDataInicio] = useState()
   const [filtroDataFim,setFiltroDataFim] = useState()
   const [filtroArea,setFiltroArea] = useState('')
   const [filtroSession,setFiltroSession] = useState('')
+  const [filtroTag,setFiltroTag] = useState('')
+  const [filtroTipo,setFiltroTipo] = useState('')
+  const [filtroAlarme,setFiltroAlarme] = useState('')
+  const [filtroDescricao,setFiltroDescricao] = useState('')
 
 
   const [abrirFiltro,setAbrirFiltro] = useState(false)
@@ -72,6 +78,10 @@ export function AlarmesCelulose() {
    
    setFiltroArea('')
    setFiltroSession('')
+   setFiltroTag('')
+   setFiltroTipo('')
+   setFiltroAlarme('')
+   setFiltroDescricao('')
 
     const data = new Date()
     const anoatual = data.getFullYear()
@@ -113,7 +123,7 @@ export function AlarmesCelulose() {
         const dataTempInicio = date(true)
         const dataTempFim = date(false)
         
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession}
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
          
         const data = await api.post('/alarmes/celulose', body)
         
@@ -123,7 +133,7 @@ export function AlarmesCelulose() {
         
         if((currentPage * itemsPerPage)>=alarmesCelulose.length && alarmesCelulose.length>=itemsPerPage){
         const dataTemp = date()
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession}
+        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
                   
         const data = await api.post('/alarmes/celulose', body)
           
@@ -190,13 +200,25 @@ export function AlarmesCelulose() {
                         reset()
                       }}>
                       <option value=""></option>
-                        <option value="Digestor">Digestor</option>
+                        <option value="DIGESTOR">DIGESTOR</option>
                         <option value="JE3">JE3</option>
                         <option value="JE2">JE2</option>
                         <option value="LFB">LFB</option>
                         <option value="LFC">LFC</option>
-                        <option value="Outros">Outros</option>
+                        <option value="OUTROS">OUTROS</option>
                       </select>
+            </div>
+
+            <div id="filtrotag">
+              <label htmlFor="labelFiltroTag">Tag</label>
+              <input type="text" 
+              id='labelFiltroTag'
+              value={filtroTag}
+              onChange={(e)=>{
+                setFiltroTag(e.target.value)
+                reset()
+              }}
+              />
             </div>
 
             <div id="filtroproc">
@@ -220,6 +242,42 @@ export function AlarmesCelulose() {
                         <option value="13">13</option>
                         <option value="16">16</option>
                       </select>
+            </div>
+
+            <div id="filtrotipo">
+              <label htmlFor="labelFiltroTipo">Tipo</label>
+              <input type="text"
+               id='labelFiltroTipo'
+               value={filtroTipo}
+               onChange={(e)=>{
+                setFiltroTipo(e.target.value)
+                reset()
+               }}
+               />
+            </div>
+
+            <div id="filtroalarme">
+              <label htmlFor="labelFiltroAlarme">Alarme</label>
+              <input type="text"
+               id='labelFiltroAlarme'
+               value={filtroAlarme}
+               onChange={(e)=>{
+                setFiltroAlarme(e.target.value)
+                reset()
+               }}
+               />
+            </div>
+
+            <div id="filtrodescricao">
+              <label htmlFor="labelFiltroDescricao">Descrição</label>
+              <input type="text"
+               id='labelFiltroDescricao'
+               value={filtroDescricao}
+               onChange={(e)=>{
+                setFiltroDescricao(e.target.value)
+                reset()
+               }}
+               />
             </div>
           </div>
         </div>

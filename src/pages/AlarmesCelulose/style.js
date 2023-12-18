@@ -182,6 +182,11 @@ overflow-x:hidden;
     border-radius:2px;
   }
 
+  >#filtrotag input{
+    padding:5px;
+    border-radius:2px;
+  }
+
   
   >#LimparFiltros{
     background:red;
@@ -202,6 +207,21 @@ overflow-x:hidden;
     &:hover{
         background:#7499E1;
       }
+  }
+
+  >#filtrotipo input{
+    padding:5px;
+    border-radius:2px;
+  }
+
+  >#filtroalarme input{
+    padding:5px;
+    border-radius:2px;
+  }
+
+  >#filtrodescricao input{
+    padding:5px;
+    border-radius:2px;
   }
 
 }
