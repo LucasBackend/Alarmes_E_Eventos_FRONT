@@ -101,6 +101,13 @@ export function AlarmesUtilidades() {
    
   }
 
+  function Sort(a,b){
+   const dataA = new Date(a)
+   const dataB = new Date(b)
+
+   return dataB - dataA
+  }
+
 
 
   useEffect(()=>{
@@ -340,7 +347,7 @@ export function AlarmesUtilidades() {
                     </tr>
                   </thead>
                   <tbody>
-                    {alarmesUtilidades.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
+                    {alarmesUtilidades.sort(Sort).slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
                       
                       <tr key={i} data-select={linhasSelecionadas.includes(d.alci_cd_identificador)}>
                         <td>{d.alci_ds_tag}</td>
@@ -350,7 +357,7 @@ export function AlarmesUtilidades() {
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_ds_area}</td>
-                        <td>{d.alci_ds_vsub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
+                        <td>{d.alci_ds_sub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
                         <td>
                           <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
                             {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}
@@ -461,7 +468,7 @@ export function AlarmesUtilidades() {
     const dataCorrigida = new Date(data.getTime() - (offset * -60000)); // Ajusta para UTC
     const hora = dataCorrigida.getHours();
     const minutos = dataCorrigida.getMinutes();
-    const segundos = dataCorrigida.getMinutes();
+    const segundos = dataCorrigida.getSeconds();
     const milisegundos = dataCorrigida.getMilliseconds();
 
     return `${hora<10?`${0}${hora}`:hora}:${minutos<10?`${0}${minutos}`:minutos}:${segundos<10?`${0}${segundos}`:segundos}:${milisegundos}`

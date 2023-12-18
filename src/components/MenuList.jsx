@@ -1,10 +1,11 @@
-import { Button, Menu } from "antd";
+import {Menu } from "antd";
 import React from "react";
 import { CgSmartHomeBoiler } from "react-icons/cg";
 import { HiOutlineHome } from "react-icons/hi2";
 import { LuFactory } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import '../../src/index.css';
+
 
 const MenuList = () => {
   const renderLink = (label, to) => (
@@ -17,6 +18,10 @@ const MenuList = () => {
     return <button style={{background:"transparent",color:"white",width:"100%",textAlign:"left"}} onClick={navigate}>HOME</button>
   }
 
+  const section = (session)=>{
+    return <span style={{padding:"0px", color:"#c7c7c7"}}>{session}</span>
+  }
+
   function navigate(){
     window.location.href = "https://apps.powerapps.com/play/e/default-a7109315-9727-4adf-97ad-4849bb63edcb/a/c1a97402-4d2d-4397-a1a7-ae41801b791b?tenantId=a7109315-9727-4adf-97ad-4849bb63edcb&source=portal&screenColor=rgba(42%2C%2048%2C%2066%2C%201)&hidenavbar=true"
   }
@@ -26,6 +31,7 @@ const MenuList = () => {
       className="mainMenu" 
       theme='dark' 
       mode="inline" 
+      id="MenuList"
       style={{ height: "auto", overflow: "auto" }} 
       defaultOpenKeys={['celulose','utilidades']}
       items={[
@@ -36,13 +42,18 @@ const MenuList = () => {
                     
         },
         {
+          label: section('PROCESSO'),
+          key: 'PROCESSO',
+                           
+        },
+        {
           label: "CELULOSE",
           key: 'celulose',
           icon: <LuFactory size={20} />,
           children: [
             { label: renderLink('Alarmes', '/'), key: 'alarmesCelulose' },
             { label: renderLink('Eventos', '/eventos/celulose'), key: 'eventosCelulose' },
-            { label: 'Ocorrências', key: 'secagem' },
+            
           ],
         },
         {
@@ -52,9 +63,15 @@ const MenuList = () => {
           children: [
             { label: renderLink('Alarmes', '/alarmes/utilidades'), key: 'alarmesUtilidades' },
             { label: renderLink('Eventos', '/eventos/utilidades'), key: 'eventosUtilidades' },
-            { label: 'Ocorrências', key: 'ocorrenciasUtilidades' },
+            
           ],
+
         },
+        {
+          label: section('SISTEMA'),
+          key: 'SISTEMA',
+                           
+        }
       ]}
     />
   );

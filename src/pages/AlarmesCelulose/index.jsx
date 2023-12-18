@@ -101,9 +101,15 @@ export function AlarmesCelulose() {
    
   }
 
+  function Sort(a,b){
+    const aa = a.alci_dt_alarme.value
+    const bb = b.alci_dt_alarme.value
+    
 
+    return bb-aa
+  }
 
-
+  
   useEffect(()=>{
     
     async function alarmesCeluloseArray(){
@@ -338,7 +344,7 @@ export function AlarmesCelulose() {
                     </tr>
                   </thead>
                   <tbody>
-                    {alarmesCelulose.slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
+                    {alarmesCelulose.sort(Sort).slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
                       
                       <tr key={i} data-select={linhasSelecionadas.includes(d.alci_cd_identificador)}>
                         <td>{d.alci_ds_tag}</td>
@@ -348,7 +354,8 @@ export function AlarmesCelulose() {
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_ds_area}</td>
-                        <td>{d.alci_ds_vsub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
+                        <td>{d.alci_ds_sub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
+                        
                         <td>
                           <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
                             {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}
@@ -459,7 +466,7 @@ export function AlarmesCelulose() {
     const dataCorrigida = new Date(data.getTime() - (offset * -60000)); // Ajusta para UTC
     const hora = dataCorrigida.getHours();
     const minutos = dataCorrigida.getMinutes();
-    const segundos = dataCorrigida.getMinutes();
+    const segundos = dataCorrigida.getSeconds();
     const milisegundos = dataCorrigida.getMilliseconds();
 
     return `${hora<10?`${0}${hora}`:hora}:${minutos<10?`${0}${minutos}`:minutos}:${segundos<10?`${0}${segundos}`:segundos}:${milisegundos}`
