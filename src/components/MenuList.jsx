@@ -5,9 +5,10 @@ import { HiOutlineHome } from "react-icons/hi2";
 import { LuFactory } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import '../../src/index.css';
+import { GiProcessor } from "react-icons/gi";
+import { PiComputerTower } from "react-icons/pi";
 
-
-const MenuList = () => {
+const MenuList = ({colapse}) => {
   const renderLink = (label, to) => (
     <Link to = {to}>
       {label}
@@ -19,7 +20,11 @@ const MenuList = () => {
   }
 
   const section = (session)=>{
-    return <span style={{padding:"0px", color:"#c7c7c7"}}>{session}</span>
+    return <span style={{color:"#c7c7c7"}}>{session}</span>
+  }
+
+  const iconcolapse = (Icone)=>{
+    return <Icone size={20} />
   }
 
   function navigate(){
@@ -42,9 +47,10 @@ const MenuList = () => {
                     
         },
         {
-          label: section('PROCESSO'),
+          label: 'PROCESSO',
           key: 'PROCESSO',
-                           
+          icon: colapse?iconcolapse(GiProcessor):null
+          
         },
         {
           label: "CELULOSE",
@@ -68,9 +74,9 @@ const MenuList = () => {
 
         },
         {
-          label: section('SISTEMA'),
+          label:section('SISTEMA'),
           key: 'SISTEMA',
-                           
+          icon: colapse?iconcolapse(PiComputerTower):null
         }
       ]}
     />

@@ -291,7 +291,7 @@ export function AlarmesCelulose() {
           <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
             {collapsed?<Logo/>:<img src={logoCompleta} width={100} className='LogoCompleta' onClick={navigate}/>}
         
-            <MenuList style={{height: 'auto'}} />
+            <MenuList style={{height: 'auto'}} colapse={collapsed}/>
             
            
        

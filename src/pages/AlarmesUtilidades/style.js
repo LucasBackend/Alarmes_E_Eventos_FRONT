@@ -6,13 +6,6 @@ width:100%;
 position:relative;
 overflow-x:hidden;
 
-#MenuList > li:nth-child(2),#MenuList li:nth-child(5){
-  padding:0px;
-  height:20px;
-  margin-top:10px;
-   
-}
-
 >#filtros{
   background:black;
   width:260px;
