@@ -38,7 +38,7 @@ const MenuList = ({colapse}) => {
       mode="inline" 
       id="MenuList"
       style={{ height: "auto", overflow: "auto" }} 
-      defaultOpenKeys={['celulose','utilidades']}
+      defaultOpenKeys={['celulose','utilidades','celuloseSistema','utilidadesSistema']}
       items={[
         {
           label: home(),
@@ -77,7 +77,26 @@ const MenuList = ({colapse}) => {
           label:section('SISTEMA'),
           key: 'SISTEMA',
           icon: colapse?iconcolapse(PiComputerTower):null
-        }
+        },
+        {
+          label: "CELULOSE",
+          key: 'celuloseSistema',
+          icon: <LuFactory size={20} />,
+          children: [
+            { label: renderLink('Alarmes', '/alarmes/celulose/sistema'), key: 'alarmesCeluloseSistema' },
+                        
+          ],
+        },
+        {
+          label: 'UTILIDADES',
+          key: 'utilidadesSistema',
+          icon: <CgSmartHomeBoiler size={20} />,
+          children: [
+            { label: renderLink('Alarmes', '/alarmes/utilidades/sistema'), key: 'alarmesUtilidadesSistema' },
+                        
+          ],
+
+        },
       ]}
     />
   );

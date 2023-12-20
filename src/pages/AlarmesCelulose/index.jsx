@@ -16,6 +16,8 @@ import api from '../../service/api';
 import ExportToExcel from './excel.jsx';
 import { Container, MainTable } from './style';
 
+import {CaptureAndCopyToClipboard} from '../../components/capturarTela/index.jsx'
+
 const { Header, Sider } = Layout; 
 
 export function AlarmesCelulose() {
@@ -308,10 +310,11 @@ export function AlarmesCelulose() {
                 icon={collapsed ? <MenuUnfoldOutlined /> : 
                 <MenuFoldOutlined />} 
               />
-              <h1>Alarmes Celulose</h1>
+              <h1>Alarmes de Processo da Celulose</h1>
               </div>
 
               <div className="diversos">
+              <CaptureAndCopyToClipboard Tela={"scrollTable"}/>
                 <button id='refresh' onClick={()=>{
                   setCurrentPage(1)
                   setAlarmesCelulose([])

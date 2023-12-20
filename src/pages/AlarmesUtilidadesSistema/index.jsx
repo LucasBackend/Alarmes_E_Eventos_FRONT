@@ -20,7 +20,7 @@ import {CaptureAndCopyToClipboard} from '../../components/capturarTela/index.jsx
 
 const { Header, Sider } = Layout; 
 
-export function AlarmesUtilidades() {
+export function AlarmesUtilidadesSistema() {
   const scrollContainerRef = useRef(null);
 
   const [alarmesUtilidades, setAlarmesUtilidades] = useState([])
@@ -133,7 +133,7 @@ export function AlarmesUtilidades() {
         
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
          
-        const data = await api.post('/alarmes/utilidades', body)
+        const data = await api.post('/alarmes/utilidades/sistema', body)
         
         data.data.length>0?setAlarmesUtilidades(data.data): null
                 
@@ -143,7 +143,7 @@ export function AlarmesUtilidades() {
         const dataTemp = date()
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
                   
-        const data = await api.post('/alarmes/utilidades', body)
+        const data = await api.post('/alarmes/utilidades/sistema', body)
           
         setAlarmesUtilidades([...alarmesUtilidades,...data.data])
         
@@ -314,7 +314,7 @@ export function AlarmesUtilidades() {
                 icon={collapsed ? <MenuUnfoldOutlined /> : 
                 <MenuFoldOutlined />} 
               />
-              <h1>Alarmes de Processo da Utilidades</h1>
+              <h1>Alarmes de Sistema da Utilidades</h1>
               </div>
 
               <div className="diversos">
@@ -357,13 +357,13 @@ export function AlarmesUtilidades() {
                       
                       <tr key={i} data-select={linhasSelecionadas.includes(d.alci_cd_identificador)}>
                         <td>{d.alci_ds_tag}</td>
-                        <td>{d.alci_tx_usuario_2}</td>
+                        <td>{d.alci_tx_usuario_2===''?'-':d.alci_tx_usuario_2}</td>
                         <td>{d.alci_ds_tipo_alarme_1}</td>
                         <td>{d.alci_tx_usuario_1}</td>
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_ds_area}</td>
-                        <td>{d.alci_ds_sub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
+                        <td>{d.alci_ds_sub_area_2===''?'-':d.alci_ds_sub_area_2}</td>
                         <td>
                           <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
                             {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}

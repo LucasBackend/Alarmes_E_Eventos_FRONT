@@ -34,7 +34,9 @@ const ExportToExcel = ({ data, fileName, sheetName }) => {
         TIPO: item.alci_ds_tipo_alarme_1,
         ALARME:item.alci_tx_usuario_1,
         DATA:item.alci_dt_alarme===null?'-':dateFormat(item.alci_dt_alarme.value),
-        HORA:item.alci_dt_alarme===null?'-':timestampFormat(item.alci_dt_alarme.value)
+        HORA:item.alci_dt_alarme===null?'-':timestampFormat(item.alci_dt_alarme.value),
+        AREA: item.alci_ds_area,
+        PROC_SECTION: item.alci_ds_sub_area_2
         
       };
     });

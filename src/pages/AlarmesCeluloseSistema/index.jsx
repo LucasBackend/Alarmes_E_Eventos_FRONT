@@ -10,20 +10,20 @@ import { LuFilterX } from "react-icons/lu";
 import { PiTargetThin } from "react-icons/pi";
 import '../../../src/index.css';
 import logoCompleta from '../../assets/logocompleta.png';
-import Logo from '../../components/Logo';
-import MenuList from '../../components/MenuList';
-import api from '../../service/api';
+import Logo from '../../components/Logo.jsx';
+import MenuList from '../../components/MenuList.jsx';
+import api from '../../service/api.js';
 import ExportToExcel from './excel.jsx';
-import { Container, MainTable } from './style';
+import { Container, MainTable } from './style.js';
 
 import {CaptureAndCopyToClipboard} from '../../components/capturarTela/index.jsx'
 
 const { Header, Sider } = Layout; 
 
-export function AlarmesUtilidades() {
+export function AlarmesCeluloseSistema() {
   const scrollContainerRef = useRef(null);
 
-  const [alarmesUtilidades, setAlarmesUtilidades] = useState([])
+  const [alarmesCelulose, setAlarmesCelulose] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
 
 
@@ -67,7 +67,7 @@ export function AlarmesUtilidades() {
   
   function reset() {
     setCurrentPage(1);
-    setAlarmesUtilidades([]);
+    setAlarmesCelulose([]);
   }
 
   function navigate(){
@@ -99,22 +99,22 @@ export function AlarmesUtilidades() {
     document.getElementById("filtroDataFim").value = `${anoatual}-${mesAtual<10?`${0}${mesAtual}`:mesAtual}-${diaAtual<10?`${0}${diaAtual}`:diaAtual}T23:59`
 
     setCurrentPage(1)
-    setAlarmesUtilidades([])
+    setAlarmesCelulose([])
    
   }
 
   function Sort(a,b){
-   const dataA = new Date(a)
-   const dataB = new Date(b)
+    const aa = a.alci_dt_alarme.value
+    const bb = b.alci_dt_alarme.value
+    
 
-   return dataB - dataA
+    return bb-aa
   }
 
-
-
+  
   useEffect(()=>{
     
-    async function alarmesUtilidadesArray(){
+    async function alarmesCeluloseArray(){
 
       if(!filtroDataInicio || !filtroDataFim){
         const data = new Date()
@@ -127,26 +127,25 @@ export function AlarmesUtilidades() {
         
       }
 
-      if (currentPage === 1 && alarmesUtilidades.length === 0) {
+      if (currentPage === 1 && alarmesCelulose.length === 0) {
         const dataTempInicio = date(true)
         const dataTempFim = date(false)
         
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
          
-        const data = await api.post('/alarmes/utilidades', body)
+        const data = await api.post('alarmes/celulose/sistema', body)
         
-        data.data.length>0?setAlarmesUtilidades(data.data): null
-                
+        data.data.length>0?setAlarmesCelulose(data.data): null
+        
       }else{
         
-        if((currentPage * itemsPerPage)>=alarmesUtilidades.length && alarmesUtilidades.length>=itemsPerPage){
+        if((currentPage * itemsPerPage)>=alarmesCelulose.length && alarmesCelulose.length>=itemsPerPage){
         const dataTemp = date()
         let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
                   
-        const data = await api.post('/alarmes/utilidades', body)
+        const data = await api.post('/alarmes/celulose/sistema', body)
           
-        setAlarmesUtilidades([...alarmesUtilidades,...data.data])
-        
+        setAlarmesCelulose([...alarmesCelulose,...data.data])
         
         }else{
           return
@@ -154,13 +153,13 @@ export function AlarmesUtilidades() {
       } 
     }
 
-    alarmesUtilidadesArray();
+    alarmesCeluloseArray();
 
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
 
-  }, [alarmesUtilidades, currentPage, itemsPerPage]);
+  }, [alarmesCelulose, currentPage, itemsPerPage]);
 
  
   return (
@@ -172,7 +171,6 @@ export function AlarmesUtilidades() {
           <IoCloseOutline id="closefilter" onClick={()=>{setAbrirFiltro(false)}}/>
 
           <div id="listFilters">
-            
             <label>
                       Data de Início:
                       <input
@@ -207,11 +205,11 @@ export function AlarmesUtilidades() {
                         reset()
                       }}>
                       <option value=""></option>
-                        <option value="CR3">CR3</option>
-                        <option value="CR4">CR4</option>
-                        <option value="CAUSTFORNO">CAUSTFORNO</option>
-                        <option value="SISTEMA ELETRICO">SISTEMA ELETRICO</option>
-                        <option value="CALDEIRAS AUXILIARES">CALDEIRAS AUXILIARES</option>
+                        <option value="DIGESTOR">DIGESTOR</option>
+                        <option value="JE3">JE3</option>
+                        <option value="JE2">JE2</option>
+                        <option value="LFB">LFB</option>
+                        <option value="LFC">LFC</option>
                         <option value="OUTROS">OUTROS</option>
                       </select>
             </div>
@@ -242,13 +240,11 @@ export function AlarmesUtilidades() {
                         <option value="4">4</option>
                         <option value="5">5</option>
                         <option value="6">6</option>
+                        <option value="7">7</option>
                         <option value="8">8</option>
                         <option value="9">9</option>
                         <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
                         <option value="13">13</option>
-                        <option value="15">15</option>
                         <option value="16">16</option>
                       </select>
             </div>
@@ -298,7 +294,7 @@ export function AlarmesUtilidades() {
           <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
             {collapsed?<Logo/>:<img src={logoCompleta} width={100} className='LogoCompleta' onClick={navigate}/>}
         
-            <MenuList style={{height: 'auto'}} colapse={collapsed} />
+            <MenuList style={{height: 'auto'}} colapse={collapsed}/>
             
            
        
@@ -314,19 +310,18 @@ export function AlarmesUtilidades() {
                 icon={collapsed ? <MenuUnfoldOutlined /> : 
                 <MenuFoldOutlined />} 
               />
-              <h1>Alarmes de Processo da Utilidades</h1>
+              <h1>Alarmes de Sistema da Celulose</h1>
               </div>
 
               <div className="diversos">
-                <CaptureAndCopyToClipboard Tela={"scrollTable"}/>
-
+              <CaptureAndCopyToClipboard Tela={"scrollTable"}/>
                 <button id='refresh' onClick={()=>{
                   setCurrentPage(1)
-                  setAlarmesUtilidades([])
+                  setAlarmesCelulose([])
                 }}>
                 <SlRefresh />
                 </button>
-                <ExportToExcel data={alarmesUtilidades} fileName={'AlarmesUtilidades'}/>
+                <ExportToExcel data={alarmesCelulose} fileName={'AlarmesCelulose'}/>
                 <button id='filter' onClick={()=>{setAbrirFiltro(!abrirFiltro)}}>
                 {abrirFiltro?<LuFilterX />:<FiFilter  />}
                 </button>
@@ -336,7 +331,7 @@ export function AlarmesUtilidades() {
             
               <MainTable>
               
-                {alarmesUtilidades.length>0&&
+                {alarmesCelulose.length>0&&
                 <div id="scrollTable" ref={scrollContainerRef} >
                 <table className="table minha-classe-personalizada" >
                   <thead>
@@ -353,17 +348,18 @@ export function AlarmesUtilidades() {
                     </tr>
                   </thead>
                   <tbody>
-                    {alarmesUtilidades.sort(Sort).slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
+                    {alarmesCelulose.sort(Sort).slice((currentPage*itemsPerPage)-itemsPerPage, currentPage * itemsPerPage).map ((d,i) => (
                       
                       <tr key={i} data-select={linhasSelecionadas.includes(d.alci_cd_identificador)}>
                         <td>{d.alci_ds_tag}</td>
-                        <td>{d.alci_tx_usuario_2}</td>
+                        <td>{d.alci_tx_usuario_2===''?'-':d.alci_tx_usuario_2}</td>
                         <td>{d.alci_ds_tipo_alarme_1}</td>
                         <td>{d.alci_tx_usuario_1}</td>
                         <td>{d.alci_dt_alarme === null ? '-' : dateFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_ds_area}</td>
-                        <td>{d.alci_ds_sub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
+                        <td>{d.alci_ds_sub_area_2===''?'-':d.alci_ds_sub_area_2}</td>
+                        
                         <td>
                           <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
                             {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}
@@ -377,7 +373,7 @@ export function AlarmesUtilidades() {
                 </div>
                 }
                
-                {alarmesUtilidades.length>0&&
+                {alarmesCelulose.length>0&&
                 <nav>
                   <ul className='pagination'>
                     <li className='page-item'>

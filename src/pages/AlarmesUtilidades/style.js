@@ -146,6 +146,29 @@ overflow-x:hidden;
       }
 
     }
+
+    >div #print{
+      width:35px;
+      height:35px;
+      background:#556EE6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:3px;
+      transition: background 0.3s ease;
+
+      &:hover{
+        background:#7499E1;
+      }
+
+      >svg{
+        width:20px;
+        height:20px;
+        stroke:white;
+        
+      }
+
+    }
   
   }
   
