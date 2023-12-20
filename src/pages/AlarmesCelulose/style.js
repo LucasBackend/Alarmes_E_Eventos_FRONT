@@ -275,12 +275,14 @@ overflow-y:hidden;
 
 >#scrollTable {
   overflow-y:auto;
+  overflow-x:auto;
   margin-bottom:5px;
   height: 90%;
 }
 
 >#scrollTable::-webkit-scrollbar{
   width: 0rem;
+  height:5px;
 }
 
 >#scrollTable::-webkit-scrollbar-track {
@@ -288,8 +290,8 @@ overflow-y:hidden;
 }
 
 >#scrollTable::-webkit-scrollbar-thumb {
-  background-color: grey;
-  border-radius: 0px;
+  background-color: #7499E1;
+  border-radius: 5px;
 }
 
 >#scrollTable table {
