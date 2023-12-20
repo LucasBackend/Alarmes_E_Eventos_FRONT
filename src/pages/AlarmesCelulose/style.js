@@ -153,10 +153,25 @@ overflow-x:hidden;
 
 #listFilters{
   margin-top:20px;
+  height:95%;
   display:flex;
   flex-direction:column;
   padding:15px;
-  gap:15px;
+  gap:25px;
+  overflow-y:auto;
+
+  &::-webkit-scrollbar{
+  width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+  background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+  background-color: #7499E1;
+  border-radius: 5px;
+  }
 
   >*{
     font-family:"Montserrat",sans-serif;
@@ -189,11 +204,8 @@ overflow-x:hidden;
 
   
   >#LimparFiltros{
-    background:red;
-    position:absolute;
-    bottom: 20px;
-    left:25%;
-    right:25%;
+    width:80%;
+    margin:65px auto 0 ;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -324,7 +336,7 @@ overflow-y:hidden;
 }
 
 >nav {
-  margin-top:30px;
+  margin-top:15px;
   display:flex;
   align-items:baseline;
   justify-content:center;

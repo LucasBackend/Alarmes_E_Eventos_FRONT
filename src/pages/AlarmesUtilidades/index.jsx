@@ -170,9 +170,7 @@ export function AlarmesUtilidades() {
           <IoCloseOutline id="closefilter" onClick={()=>{setAbrirFiltro(false)}}/>
 
           <div id="listFilters">
-            <button onClick={handleResetFilter} id='LimparFiltros'>
-              Limpar Filtros
-            </button>
+            
             <label>
                       Data de Início:
                       <input
@@ -229,7 +227,7 @@ export function AlarmesUtilidades() {
             </div>
 
             <div id="filtroproc">
-                      <label>Proc Session</label>
+                      <label>Proc Section</label>
                       <select name="" id="selectProcSession" onChange={(e) => {
                         setFiltroSession(e.target.value)
                         reset()
@@ -288,6 +286,10 @@ export function AlarmesUtilidades() {
                }}
                />
             </div>
+
+            <button onClick={handleResetFilter} id='LimparFiltros'>
+              Limpar Filtros
+            </button>
           </div>
         </div>
       <Layout>
@@ -342,7 +344,7 @@ export function AlarmesUtilidades() {
                       <th>Data</th>
                       <th>Hora</th>
                       <th>Área</th>
-                      <th>Proc Session</th>
+                      <th>Proc Section</th>
                       <th>  </th>
                     </tr>
                   </thead>

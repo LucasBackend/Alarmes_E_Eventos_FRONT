@@ -169,9 +169,6 @@ export function AlarmesCelulose() {
           <IoCloseOutline id="closefilter" onClick={()=>{setAbrirFiltro(false)}}/>
 
           <div id="listFilters">
-            <button onClick={handleResetFilter} id='LimparFiltros'>
-              Limpar Filtros
-            </button>
             <label>
                       Data de Início:
                       <input
@@ -228,7 +225,7 @@ export function AlarmesCelulose() {
             </div>
 
             <div id="filtroproc">
-                      <label>Proc Session</label>
+                      <label>Proc Section</label>
                       <select name="" id="selectProcSession" onChange={(e) => {
                         setFiltroSession(e.target.value)
                         reset()
@@ -285,6 +282,10 @@ export function AlarmesCelulose() {
                }}
                />
             </div>
+
+            <button onClick={handleResetFilter} id='LimparFiltros'>
+              Limpar Filtros
+            </button>
           </div>
         </div>
       <Layout>
@@ -339,7 +340,7 @@ export function AlarmesCelulose() {
                       <th>Data</th>
                       <th>Hora</th>
                       <th>Área</th>
-                      <th>Proc Session</th>
+                      <th>Proc Section</th>
                       <th>  </th>
                     </tr>
                   </thead>
