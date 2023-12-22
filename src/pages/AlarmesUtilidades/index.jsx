@@ -20,7 +20,7 @@ import {CaptureAndCopyToClipboard} from '../../components/capturarTela/index.jsx
 
 const { Header, Sider } = Layout; 
 
-export function AlarmesUtilidades() {
+export function AlarmesUtilidades(){
   const scrollContainerRef = useRef(null);
 
   const [alarmesUtilidades, setAlarmesUtilidades] = useState([])
@@ -36,11 +36,16 @@ export function AlarmesUtilidades() {
   const [filtroAlarme,setFiltroAlarme] = useState('')
   const [filtroDescricao,setFiltroDescricao] = useState('')
 
+  //me possibilida não deixaro back end em loop infinito caso não haja itens
+  const [controlePage,setControlePage] = useState(false)
+  const [stopAcumCollect,setStopAcumCollect] = useState(false)
+
 
   const [abrirFiltro,setAbrirFiltro] = useState(false)
 
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
+  
   const paginationWindowSize = 5;
   const [paginationWindow, setPaginationWindow] = useState({ start: 1, end: paginationWindowSize });
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -68,6 +73,8 @@ export function AlarmesUtilidades() {
   function reset() {
     setCurrentPage(1);
     setAlarmesUtilidades([]);
+    setPaginationWindow({ start: 1, end: paginationWindowSize })
+    setStopAcumCollect(false)
   }
 
   function navigate(){
@@ -104,14 +111,14 @@ export function AlarmesUtilidades() {
   }
 
   function Sort(a,b){
-   const dataA = new Date(a)
-   const dataB = new Date(b)
+    const aa = a.alci_dt_alarme.value
+    const bb = b.alci_dt_alarme.value
+    
 
-   return dataB - dataA
+    return bb-aa
   }
 
-
-
+  
   useEffect(()=>{
     
     async function alarmesUtilidadesArray(){
@@ -131,22 +138,31 @@ export function AlarmesUtilidades() {
         const dataTempInicio = date(true)
         const dataTempFim = date(false)
         
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
+        let body = {"pagination" : alarmesUtilidades.length,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
          
         const data = await api.post('/alarmes/utilidades', body)
         
-        data.data.length>0?setAlarmesUtilidades(data.data): null
-                
+        if(data.data.length>0){
+          setAlarmesUtilidades(data.data)
+          
+        }
+        
       }else{
         
-        if((currentPage * itemsPerPage)>=alarmesUtilidades.length && alarmesUtilidades.length>=itemsPerPage){
+        if((currentPage * itemsPerPage)>=alarmesUtilidades.length && alarmesUtilidades.length>=itemsPerPage && controlePage===false && stopAcumCollect===false){
+          setControlePage(true)
         const dataTemp = date()
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
+        let body = {"pagination" : alarmesUtilidades.length,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
                   
         const data = await api.post('/alarmes/utilidades', body)
-          
-        setAlarmesUtilidades([...alarmesUtilidades,...data.data])
+          console.log(data.data.length)
+        if(data.data.length===0){
+          stopAcumCollect(true)
+        }
         
+       
+        setAlarmesUtilidades([...alarmesUtilidades,...data.data])
+        setControlePage(false)
         
         }else{
           return
@@ -172,7 +188,6 @@ export function AlarmesUtilidades() {
           <IoCloseOutline id="closefilter" onClick={()=>{setAbrirFiltro(false)}}/>
 
           <div id="listFilters">
-            
             <label>
                       Data de Início:
                       <input
@@ -295,10 +310,10 @@ export function AlarmesUtilidades() {
           </div>
         </div>
       <Layout>
-          <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{height:'100vh', background: 'var(--sami-main)', overflowY: "auto"}}>
+          <Sider collapsed={collapsed} collapsible trigger={null} className="sidebar" width={260} style={{height:'100vh', background: 'var(--sami-main)', overflowY: "scroll"}}>
             {collapsed?<Logo/>:<img src={logoCompleta} width={100} className='LogoCompleta' onClick={navigate}/>}
         
-            <MenuList style={{height: 'auto'}} colapse={collapsed} />
+            <MenuList style={{height: 'auto'}} colapse={collapsed}/>
             
            
        
@@ -318,11 +333,9 @@ export function AlarmesUtilidades() {
               </div>
 
               <div className="diversos">
-                <CaptureAndCopyToClipboard Tela={"scrollTable"}/>
-
+              <CaptureAndCopyToClipboard Tela={"scrollTable"}/>
                 <button id='refresh' onClick={()=>{
-                  setCurrentPage(1)
-                  setAlarmesUtilidades([])
+                  reset()
                 }}>
                 <SlRefresh />
                 </button>
@@ -364,6 +377,7 @@ export function AlarmesUtilidades() {
                         <td>{d.alci_dt_alarme ===null?'-' : timestampFormat(d.alci_dt_alarme.value)}</td>
                         <td>{d.alci_ds_area}</td>
                         <td>{d.alci_ds_sub_area_2===null?'-':d.alci_ds_sub_area_2}</td>
+                        
                         <td>
                           <Button onClick={()=>{selectTableHandleClick(d.alci_cd_identificador)}}>
                             {linhasSelecionadas.includes(d.alci_cd_identificador)?<AiOutlineClose/>:<PiTargetThin  size={15} style={{ marginBottom: '3px' }}/>}

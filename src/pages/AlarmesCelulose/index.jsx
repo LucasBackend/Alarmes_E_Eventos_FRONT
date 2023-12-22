@@ -36,11 +36,16 @@ export function AlarmesCelulose() {
   const [filtroAlarme,setFiltroAlarme] = useState('')
   const [filtroDescricao,setFiltroDescricao] = useState('')
 
+  //me possibilida não deixaro back end em loop infinito caso não haja itens
+  const [controlePage,setControlePage] = useState(false)
+  const [stopAcumCollect,setStopAcumCollect] = useState(false)
+
 
   const [abrirFiltro,setAbrirFiltro] = useState(false)
 
   const numbers = [...Array(2000).keys()].slice(1)
   const npage = 2000;
+  
   const paginationWindowSize = 5;
   const [paginationWindow, setPaginationWindow] = useState({ start: 1, end: paginationWindowSize });
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -68,6 +73,8 @@ export function AlarmesCelulose() {
   function reset() {
     setCurrentPage(1);
     setAlarmesCelulose([]);
+    setPaginationWindow({ start: 1, end: paginationWindowSize })
+    setStopAcumCollect(false)
   }
 
   function navigate(){
@@ -131,21 +138,31 @@ export function AlarmesCelulose() {
         const dataTempInicio = date(true)
         const dataTempFim = date(false)
         
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
+        let body = {"pagination" : alarmesCelulose.length,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTempInicio,"datafim":filtroDataFim?filtroDataFim:dataTempFim,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
          
         const data = await api.post('/alarmes/celulose', body)
         
-        data.data.length>0?setAlarmesCelulose(data.data): null
+        if(data.data.length>0){
+          setAlarmesCelulose(data.data)
+          
+        }
         
       }else{
         
-        if((currentPage * itemsPerPage)>=alarmesCelulose.length && alarmesCelulose.length>=itemsPerPage){
+        if((currentPage * itemsPerPage)>=alarmesCelulose.length && alarmesCelulose.length>=itemsPerPage && controlePage===false && stopAcumCollect===false){
+          setControlePage(true)
         const dataTemp = date()
-        let body = {"pagination" : currentPage,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
+        let body = {"pagination" : alarmesCelulose.length,"area": filtroArea,"datainicio":filtroDataInicio?filtroDataInicio:dataTemp,"datafim":filtroDataFim?filtroDataFim:dataTemp,"procsession":filtroSession,"tag":filtroTag,"tipo":filtroTipo,"alarme":filtroAlarme,"descricao":filtroDescricao}
                   
         const data = await api.post('/alarmes/celulose', body)
-          
+          console.log(data.data.length)
+        if(data.data.length===0){
+          stopAcumCollect(true)
+        }
+        
+       
         setAlarmesCelulose([...alarmesCelulose,...data.data])
+        setControlePage(false)
         
         }else{
           return
@@ -316,8 +333,7 @@ export function AlarmesCelulose() {
               <div className="diversos">
               <CaptureAndCopyToClipboard Tela={"scrollTable"}/>
                 <button id='refresh' onClick={()=>{
-                  setCurrentPage(1)
-                  setAlarmesCelulose([])
+                  reset()
                 }}>
                 <SlRefresh />
                 </button>
